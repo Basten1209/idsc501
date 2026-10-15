@@ -1,5 +1,7 @@
 # Meme Coin Analysis Dashboard 발표 자료
 
+**개정 상태:** [7분 발표 구성안](slide-outline.md)이 현재 편집 기준이다. 아래 PPT·PDF는 기존 18장 초안이며, 8장 구성과 CMC 크롤링·MemeChain 참고 자료 구분은 아직 슬라이드 파일에 반영하지 않았다.
+
 [PowerPoint 열기](memecoin-analysis-dashboard.pptx) · [PDF 보기](memecoin-analysis-dashboard.pdf) · [출처와 이미지 크레딧](sources.md)
 
 영문 슬라이드 **18장**으로 구성했습니다. 1–15장은 본 발표, 16–18장은 질문 대응과 출처 부록입니다. 본문 약 10–12분을 가정했으며 공식 발표 시간은 아직 미정입니다. 각 슬라이드의 발표자 노트에는 한국어 설명과 관련 출처가 있습니다.

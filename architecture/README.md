@@ -8,7 +8,7 @@
 |---|---|
 | [전체 설계](system-design.md) | 목적, 범위, 시스템 흐름, PostgreSQL·MongoDB 선택 근거, 화면 구성 |
 | [데이터 모델](data-model.md) | 식별자, 관계형 테이블, MongoDB 문서, 인덱스, 파생 지표 |
-| [수집과 아카이브](ingestion-and-archiving.md) | 소스별 수집 방법, MemeChain 링크 검증, 갱신 주기, 원본 보존 |
+| [수집과 아카이브](ingestion-and-archiving.md) | 소스별 크롤링·API 수집, 대상 사이트·계정 검증, 갱신 주기, 원본 보존 |
 | [운영과 검증](operations-and-validation.md) | 배치 공개, 재시도·복구, 백업·삭제, 검증 기준, 6주 일정 |
 | [근거와 출처](../proposal/evidence-and-references.md) | 강의 요구사항, 실제 데이터 점검, 외부 문서, 확인되지 않은 항목 |
 

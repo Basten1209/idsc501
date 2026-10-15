@@ -23,7 +23,7 @@
 flowchart TD
     CMC[CoinMarketCap Historical Data 페이지 크롤링] --> P[팀 제공 가격 CSV]
     P --> R[원본 파일 아카이브와 manifest]
-    Z[MemeChain 링크 메타데이터] --> G[코인·계약 주소·링크 검증]
+    S[팀이 선정한 프로젝트 사이트·소셜 채널] --> G[코인·계약 주소·링크 검증]
     G --> X[FxTwitter 선정 계정 수집]
     G --> A[Arctic Shift 조건부 수집]
     G --> W[검증된 웹사이트 변경 확인]

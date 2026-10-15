@@ -34,7 +34,7 @@ For X, we will begin with selected DOGE, SHIB, PEPE, BONK, and SPX accounts thro
 
 For Reddit, the proposed adapter uses Arctic Shift for relevant DOGE, SHIB, and PEPE communities. Technical reachability does not establish permission: Reddit's current researcher policy excludes research using data collected outside its researcher program. The adapter will remain disabled unless applicable access and use conditions are resolved; the core demonstration can operate with price and eligible X observations. [Arctic Shift](https://github.com/ArthurHeitmann/arctic_shift), [Reddit policy](https://support.reddithelp.com/hc/en-us/articles/42728983564564-Responsible-Builder-Policy)
 
-MemeChain will provide candidate websites and social endpoints, not a corpus of social posts. We will verify links and asset identities before collection. Its publication date must not be mistaken for the time its websites were collected. [MemeChain dataset](https://zenodo.org/records/18246856)
+MemeChain informed the initial ideation about relevant websites and social channels. We will collect project data from the selected sites and accounts through web crawling or APIs, after verifying their identities and access conditions. MemeChain remains a background reference; its dataset and archived websites are not inputs to the pipeline. [MemeChain reference](https://zenodo.org/records/18246856)
 
 ## 4. Collection and preprocessing
 

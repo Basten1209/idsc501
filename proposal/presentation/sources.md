@@ -8,13 +8,14 @@ Presentation prepared on **2026-10-15**. The project evidence baseline is **2026
 - Team-supplied `.context/attachments/ogAuZF/memecoin_price.zip` and `.context/attachments/lezAdu/memecoin_eda.ipynb`. The team confirmed on 2026-10-15 that the prices were collected by crawling CoinMarketCap Historical Data pages and delivered as CSV files. CSV import describes downstream ingestion, not the original collection method. These local inputs are not redistributed here.
 - Slide 2 uses all 628 supplied TRUMP daily closes, from 2025-01-18 through 2026-10-07. Highest daily close: **$45.5030010328**, on 2025-01-19. Last supplied close: **$1.8772949946**. The intraday high of **$75.3518198764** is a different measure and is not the plotted peak. The green and red segments share the peak observation.
 - Slide 12 uses supplied DOGE daily closes during July–September 2026. Social activity is explicitly unavailable. No synthetic social activity appears in the deck.
-- The 10-coin price input contains **14,773 rows**. Source availability checks, the **31,811-row** MemeChain social metadata table, and course requirements are documented in the evidence file. Source spot checks do not establish continuous availability.
+- The 10-coin price input contains **14,773 rows**. Source availability checks and course requirements are documented in the evidence file. Source spot checks do not establish continuous availability.
+- **Revision note, 2026-10-15:** MemeChain is an ideation reference for discovering candidate sites/channels, not a pipeline input. The **31,811 rows** mentioned in the original 18-slide draft describe the external table inspected during background research, not project data. The revised presentation outline removes that dedicated slide and describes crawling/API collection from the selected sites and accounts.
 
 ## Primary references
 
 | Topic | Reference | Slides |
 |---|---|---|
-| Link discovery | [MemeChain dataset](https://zenodo.org/records/18246856), [paper](https://arxiv.org/html/2601.22185v1) | 7 |
+| Ideation reference (original draft slide 7) | [MemeChain dataset](https://zenodo.org/records/18246856), [paper](https://arxiv.org/html/2601.22185v1) | 7 |
 | X collection | [FxEmbed API](https://docs.fxembed.com/api/introduction/) | 6, 17 |
 | Reddit collection | [Arctic Shift](https://github.com/ArthurHeitmann/arctic_shift), [Reddit Responsible Builder Policy](https://support.reddithelp.com/hc/en-us/articles/42728983564564-Responsible-Builder-Policy) | 6, 17 |
 | Relational JSON support | [PostgreSQL JSON types](https://www.postgresql.org/docs/current/datatype-json.html) | 9 |

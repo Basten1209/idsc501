@@ -66,6 +66,8 @@ All ten coins overlap from **2025-10-04 to 2026-10-07**. The price data occupy a
 
 ## MemeChain inspection
 
+**Scope clarification, 2026-10-15:** MemeChain was consulted during ideation to identify potentially useful sites and social channels. The inspection below records that background research, not a dataset to be ingested. The project will acquire data from selected sites/accounts through crawling or APIs. MemeChain CSV imports, archived-website imports, and release-monitoring jobs are outside the design.
+
 Primary sources: [Zenodo record](https://zenodo.org/records/18246856), [record README](https://zenodo.org/records/18246856/files/README.md?download=1), [metadata API](https://zenodo.org/api/records/18246856), and [paper](https://arxiv.org/html/2601.22185v1).
 
 The record was published on 2026-01-14; its metadata declares CC BY 4.0. The paper places initial collection and website snapshots in October 2024, with lifecycle observations extending into January 2025. Publication time is not observation time. Dataset licensing does not grant rights to newly collected platform content.
@@ -91,7 +93,7 @@ Asset matching examples from the inspected rows:
 - Canonical Solana BONK links to `bonkcoin.com`, `bonk_inu`, and `Official_Bonk_Inu`.
 - SPX's Ethereum row has a website and Telegram portal but no X value; wrapped-chain rows contain an X account. Cross-chain inheritance needs verification.
 
-The master data contain repeated symbols, including DOGE, SHIB, PEPE, and SPX. Join through verified chain/contract identities, not symbol alone. MemeChain supplies endpoint and website evidence; its logos are not a corpus of social meme images and its CSV links are not social messages.
+The inspected master data contain repeated symbols, including DOGE, SHIB, PEPE, and SPX. This review informed the decision to verify each selected site/account against asset identity, rather than rely on a ticker. MemeChain is retained as an ideation reference. Its row counts, logos, links, and archived pages are not part of the project’s collected analytical data.
 
 ## Source feasibility and limits
 

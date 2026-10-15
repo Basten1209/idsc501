@@ -7,36 +7,35 @@
 | 소스 | 가져올 데이터 | 초기 수집 경로 | 갱신과 제약 |
 |---|---|---|---|
 | CoinMarketCap 가격 | 일별 OHLCV·시가총액·공급량 | Historical Data 페이지 크롤링으로 수집한 CSV를 import | 추가 CSV 수령 시 import; 크롤러 복원 전에는 자동 최신화 불가 |
-| MemeChain | 코인·계약·웹사이트·소셜 URL | 버전이 고정된 Zenodo CSV | 초기 seed import, 신규 release 확인은 월별 |
-| FxTwitter | 선정 계정의 게시물과 관측 시점 반응 수 | v2 timeline, known-status lookup | 일별; 선정 계정 범위와 제공자 한계 표시 |
-| Arctic Shift | Reddit submission/comment | community/time search, 필요 시 허용된 월별 archive | 접근·사용 조건 해결 전 disabled |
-| 검증된 프로젝트 웹사이트 | 소셜 링크, 계약 주소 확인 근거 | 허용된 URL의 HTML | 소수 선정 사이트 일별 조건부 요청; 링크 변화는 검토 후 반영 |
+| X / FxTwitter API | 선정 계정의 게시물과 관측 시점 반응 수 | API v2 timeline, known-status lookup | 일별; 선정 계정 범위와 제공자 한계 표시 |
+| Reddit / Arctic Shift | Reddit submission/comment | API community/time search, 필요 시 허용된 월별 archive | 접근·사용 조건 해결 전 disabled |
+| 검증된 프로젝트 웹사이트 | 소셜 링크, 계약 주소 확인 근거 | 허용된 URL의 HTML 크롤링·파싱 | 소수 선정 사이트 일별 조건부 요청; 링크 변화는 검토 후 반영 |
 
 초기 X 후보 handle은 `dogecoin`, `Shibtoken`, `pepecoineth`, `bonk_inu`, `SPX6900`이다. 응답이 온다는 사실만으로 공식 계정이라 확정하지 않는다. 플랫폼의 안정적인 계정 ID와 검증된 프로젝트 사이트의 역링크 등을 확인하고 선정 계정 registry에 등록한다. handle 변경 이력은 보존한다.
 
 Reddit 후보는 `dogecoin`, `SHIBArmy`, `Pepecryptocurrency`다. 현재 Reddit 정책상 RFR 외 수집 데이터의 연구 사용 제한이 있으므로, Arctic Shift를 무료라는 이유만으로 활성화하지 않는다. 사용 조건이 해결되면 계약은 유지하면서 adapter를 활성화하고, 해결되지 않으면 unavailable을 표시한다. [정책 근거](https://support.reddithelp.com/hc/en-us/articles/42728983564564-Responsible-Builder-Policy)
 
-## 2. MemeChain에서 수집 대상 registry 만들기
+## 2. 수집 대상 사이트·계정 선정과 검증
 
-Zenodo의 [고정 record](https://zenodo.org/records/18246856)와 [README](https://zenodo.org/records/18246856/files/README.md?download=1)를 provenance로 기록한다. v1의 게시 날짜, 원래 수집 시기, 우리 import 시각은 별도 필드로 둔다. 공급자가 제공하는 정적 웹사이트 HTML은 특정 시점의 스냅샷이며 오늘의 소셜 게시물 아카이브가 아니다.
+MemeChain은 관련 사이트와 소셜 채널을 탐색하는 ideation 단계에서 참고했다. 실제 파이프라인은 선정한 사이트·계정에 크롤링 또는 API 요청을 보내 데이터를 확보한다. MemeChain 데이터셋·웹사이트 아카이브를 적재하거나 Zenodo release를 정기 확인하는 작업은 두지 않는다. 참고 자료의 과거 점검 결과는 [근거 문서](../proposal/evidence-and-references.md#memechain-inspection)에 남긴다.
 
-1. record ID·파일명·버전·라이선스·공급자 checksum을 manifest에 저장한다. 전체 ZIP을 내려받으면 checksum을 대조하고, 일부 CSV만 읽었다면 개별 추출 파일의 SHA-256과 부분 검증 사실을 기록한다.
-2. CMC 가격 자산과 chain/contract로 연결한다. 네이티브 DOGE처럼 social subset에 없는 경우 수동 검증한 별도 근거를 등록한다. ticker 중복으로 후보를 자동 병합하지 않는다.
-3. website/twitter/telegram/discord **모든 열**에서 URL을 읽고 실제 hostname과 path로 재분류한다. 원래 열 이름과 URL도 남긴다.
-4. X profile, X status, X community, Telegram public username/invite/portal, Discord invite, Reddit community/post, 일반 웹사이트를 구별한다. profile URL은 계정 수집 후보이고 status URL은 개별 게시물 ID seed다.
-5. 도메인 정규화·추적 query 제거·허용된 redirect 확인을 수행한다. 경로·주소의 대소문자를 무조건 낮추지 않는다. 원문 URL과 정규화 URL을 모두 저장한다.
-6. 식별 근거, `first_seen_at`, `last_checked_at`, dataset version, verification 상태와 access 상태를 source_endpoints에 기록한다. 새 링크가 생겨도 이전 링크를 덮어쓰지 않는다.
+1. 분석할 코인별 프로젝트 사이트·X 계정·Reddit 커뮤니티 후보를 팀이 선정한다. 후보를 찾은 참고 자료와 실제 수집 대상 URL을 구분해 기록한다.
+2. 프로젝트 사이트의 계약 주소, 소셜 링크, 계정 ID 등을 대조해 자산과 계정의 연결을 검증한다. native DOGE는 계약 주소 대신 chain·native identifier를 사용한다. ticker만으로 후보를 병합하지 않는다.
+3. 실제 hostname과 path로 X profile/status/community, Reddit community/post, 일반 웹사이트 등을 구별한다. 사이트별로 API 조회 또는 HTML 크롤링·파싱 경로와 수집할 필드를 정한다.
+4. 도메인 정규화·추적 query 제거·허용된 redirect 확인을 수행한다. 경로·주소의 대소문자를 무조건 낮추지 않는다. 원문 URL과 정규화 URL을 모두 저장한다.
+5. 검증된 대상만 `source_endpoints`에 등록한다. 식별 근거, `first_seen_at`, `last_checked_at`, registry version, verification 상태와 access 상태를 기록한다. 새 링크가 생겨도 이전 링크를 덮어쓰지 않는다.
+6. 수집기는 이 목록에 따라 선정 사이트를 크롤링하거나 해당 소셜 API를 호출한다. 수집 응답의 provenance는 실제 요청 URL·provider·관측 시각을 기준으로 남긴다.
 
 계약 주소 검증의 초기 예시는 다음과 같다. 아래 주소는 검토 시작점이며 소셜 계정 소유권을 증명하지 않는다.
 
 | 자산 | 식별 후보 | 주의점 |
 |---|---|---|
-| SHIB | Ethereum `0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce` | 해당 MemeChain row의 소셜 필드가 비어 있음 |
+| SHIB | Ethereum `0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce` | 선정 사이트의 계약 주소와 소셜 링크 대조 |
 | PEPE | Ethereum `0x6982508145454ce325ddbe47a25d4ec3d2311933` | `pepecoineth` 링크와 프로젝트 근거 대조 |
 | BONK | Solana `DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263` | 주소 대소문자 유지 |
-| SPX | Ethereum `0xe0f63a424a4439cbe457d80e4f4b51ad25b2c56c` | 다른 체인 row의 X 링크를 자동 상속하지 않음 |
+| SPX | Ethereum `0xe0f63a424a4439cbe457d80e4f4b51ad25b2c56c` | 다른 체인의 계정 연결을 자동 상속하지 않음 |
 
-수만 개 링크를 매일 재수집하지 않는다. 전체 CSV는 seed 인벤토리로 두고 MVP의 검증된 코인·계정·사이트만 활성화한다. 미확인 계정은 수집 후보에 남기고 공식 계정으로 표시하지 않는다.
+초기 범위의 검증된 코인·계정·사이트만 활성화한다. 미확인 계정은 후보로 남기고 공식 계정으로 표시하지 않는다.
 
 ## 3. FxTwitter 수집
 
