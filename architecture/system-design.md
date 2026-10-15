@@ -19,6 +19,33 @@
 
 ## 2. 데이터 흐름과 구성 요소
 
+### 발표용 전체 흐름
+
+PPT 7장과 같은 개요다. **위쪽 가격 경로와 아래쪽 소셜 경로가 PostgreSQL의 분석 테이블에서 결합**된다. 각 화살표는 다음 단계로 전달하는 데이터의 방향이다. PostgreSQL의 차트·상태 조회와 MongoDB의 게시물 상세 조회는 서로 다른 읽기 경로다.
+
+```mermaid
+flowchart LR
+    C["CMC Historical Data<br/>크롤링 → 가격 CSV"] --> RAW["원본 아카이브<br/>CSV · JSON · HTML<br/>URL · 수집 시각 · 체크섬"]
+    S["선정 X / Reddit<br/>FxTwitter API<br/>Arctic Shift 조건부 수집"] --> RAW
+    RAW --> V["가격 검증<br/>UTC 날짜 · 중복 · OHLC"]
+    RAW --> N["소셜 표준화<br/>게시물 ID · UTC · 플랫폼 필드"]
+    V --> PG[("PostgreSQL<br/>가격 + 일별 지표<br/>코인·날짜 기준 JOIN")]
+    N --> M[("MongoDB<br/>게시물·댓글 문서<br/>반응 수 관측 이력")]
+    M --> ETL["Python 일별 ETL<br/>코인 연결 · 감성<br/>코인·날짜·범위별 집계"]
+    ETL --> PG
+    PG --> CH["Streamlit + Plotly<br/>가격·소셜 차트 / 데이터 상태"]
+    M --> DETAIL["Streamlit 게시물 상세"]
+    PG -. "검색 투영 → 게시물 ID" .-> DETAIL
+    classDef plain fill:#FFFFFF,stroke:#BDBDBD,color:#111111;
+    classDef accent fill:#FFFFFF,stroke:#A61955,color:#A61955;
+    class C,S,RAW,V,N,PG,M,CH,DETAIL plain;
+    class ETL accent;
+```
+
+소셜은 일별 배치와 최근 7일 재조회, 월별 아카이브를 기본으로 한다. 가격 갱신에는 새 CSV 또는 팀원 크롤러 복원이 필요하다. Raw archive의 HTML은 선정 프로젝트 웹사이트의 검증 응답이며 MemeChain 데이터셋을 뜻하지 않는다. 실제 구현에서는 아래 상세 경로의 분석 배치 검증·공개 단계를 거친다. PPT에서는 읽기 경로를 간결하게 보여 주기 위해 SQL의 게시물 ID 선택 단계와 배치 공개 절차를 발표 노트로 설명한다.
+
+### 상세 경로와 공개 경계
+
 ```mermaid
 flowchart TD
     CMC[CoinMarketCap Historical Data 페이지 크롤링] --> P[팀 제공 가격 CSV]

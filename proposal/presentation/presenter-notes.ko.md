@@ -2,7 +2,7 @@
 
 **8장 · 목표 6분 30초 · 제한 7분.** 아래 시간은 리허설을 위한 배분이다. 참고 수치와 출처는 필요할 때만 설명한다. 팀원 이름은 발표 전에 채운다.
 
-[PPT](memecoin-analysis-dashboard-white.pptx) · [PDF](memecoin-analysis-dashboard-white.pdf) · [전체 출처](sources.md)
+[PPT](memecoin-analysis-dashboard-pipeline.pptx) · [PDF](memecoin-analysis-dashboard-pipeline.pdf) · [전체 출처](sources.md)
 
 ## 1. Meme Coin Analysis Dashboard
 
@@ -47,13 +47,15 @@ X는 화면의 HTML을 직접 긁는 대신 FxTwitter의 제3자 API를 호출�
 그다음 검증한 계정과 코인 정보, 본문의 표현을 이용해 게시물을 코인에 연결합니다. 영어 텍스트에 대해서는 기본 감성 지표를 계산하고, 코인·날짜별 게시물 수와 평균 감성 등으로 집계합니다. 감성의 긍정·부정을 가격의 상승·하락 예측으로 해석하지 않습니다.
 가격도 중복 날짜와 OHLC 관계, 0이나 누락 값을 점검합니다. 특히 API 실패는 활동 0건과 다릅니다. 수집을 확인한 경우에만 0을 쓰고, 실패나 미수집 상태는 결측과 상태 정보로 남깁니다.
 
-## 7. Database management
+## 7. Data pipeline & storage
 
 **85초 · 4:15–5:40**
 
-저장소는 역할을 나눕니다. MongoDB에는 플랫폼별 필드가 서로 다른 게시물 문서와 수집 시점의 관측 이력을 보관합니다. PostgreSQL에는 코인 식별 정보, 일별 가격, 게시물과 코인의 연결, 분석용 일별 지표를 저장합니다. 원본 응답은 별도 파일 아카이브에 요청 URL과 시각, 체크섬을 함께 남깁니다.
-중요한 점은 PostgreSQL도 JSON을 지원한다는 것입니다. 텍스트이기 때문에 MongoDB가 필수라고 주장하는 것은 아닙니다. 이번 프로젝트에서는 문서형 모델과 관계형 모델의 책임을 구분하고, 둘 사이의 ETL을 직접 구현하려고 MongoDB를 선택했습니다. 대신 두 데이터베이스의 백업과 일관성 관리가 추가된다는 비용도 있습니다.
-Python은 MongoDB 문서에서 필요한 값을 추출하고 코인 연결과 일별 집계를 수행합니다. 집계 결과는 PostgreSQL에 적재하고 가격과 코인 ID·날짜를 기준으로 결합합니다. 여러 게시물을 가격 행에 바로 붙이면 가격이나 거래량이 중복될 수 있으므로 먼저 집계합니다. 게시물 ID와 관측 ID를 유지해 차트의 지표에서 원본까지 추적할 수 있게 합니다.
+이 그림이 전체 데이터 파이프라인입니다. 왼쪽에서 오른쪽으로 수집, 원본 보존, 전처리, 저장과 변환, 화면 조회 순서로 읽으면 됩니다.
+위쪽 가격 경로는 CoinMarketCap Historical Data 페이지를 크롤링한 CSV에서 시작합니다. 원본을 보존하고 날짜와 OHLC 관계 등을 점검한 뒤 PostgreSQL에 적재합니다.
+아래쪽 소셜 경로는 선정 X 계정을 FxTwitter API로, 접근 조건을 충족한 Reddit 커뮤니티를 Arctic Shift로 수집합니다. 원본 JSON과 요청 URL, 수집 시각, 체크섬을 아카이브하고 ID와 시각, 플랫폼 필드를 표준화해 MongoDB에 저장합니다. 웹사이트 검증 응답이 있으면 HTML도 같은 아카이브에 보관합니다.
+가운데 빨간 화살표가 두 DB 사이의 ETL입니다. MongoDB에서 코인 연결과 감성 등 필요한 값을 추출하고 코인·날짜·수집 범위별로 먼저 집계합니다. 이 결과를 PostgreSQL에 적재해 가격과 결합합니다. 검증된 분석 배치를 공개하고, Streamlit의 차트와 상태 화면은 이 SQL 결과를 읽습니다. 게시물 탐색에서는 SQL 투영으로 ID를 고른 뒤 MongoDB에서 상세를 조회합니다.
+PostgreSQL도 JSON을 지원합니다. MongoDB는 소셜 문서를 따로 관리하고 문서형 모델과 관계형 모델 사이의 ETL을 구현하기 위한 선택이며, 두 DB의 운영 비용이 추가됩니다.
 
 ## 8. Dashboard & expected outcome
 

@@ -16,7 +16,7 @@ Lecture 1은 Proposal의 범위를 **Ideation, data collection & preprocessing, 
 | 4 | Data overview | 가격의 숫자·날짜와 소셜의 텍스트·메타데이터를 비교. 확보한 10개 코인 가격 14,773행과 수집 예정 소셜 데이터 구분 | 40초 |
 | 5 | Data collection | CMC Historical Data 페이지 크롤링, FxTwitter API, 조건부 Arctic Shift API·아카이브. 선정 프로젝트 사이트 HTML 크롤링은 링크·정체성 검증의 보조 경로. 일별 소셜 배치와 최근 7일 재조회 | 70초 |
 | 6 | Data preprocessing | 가격 품질 점검, 게시물 ID 중복 제거, UTC 정렬, 언어·재게시 구분, 코인 연결. 게시물 한 건이 코인별 일별 지표로 변환되는 예시 | 65초 |
-| 7 | Database management | PostgreSQL의 가격·관계·분석 테이블, MongoDB의 게시물 문서·관측 이력, 원본 파일 아카이브. 안정적인 ID로 연결하고 일별 지표를 SQL에서 가격과 결합. PostgreSQL도 JSON을 지원하며 MongoDB는 역할 분리와 SQL/NoSQL ETL 학습을 위한 선택 | 85초 |
+| 7 | Data pipeline & storage | 좌→우 전체 흐름도: 수집 → 원본 아카이브 → 전처리 → DB·ETL → 화면. 가격은 PostgreSQL, 소셜은 MongoDB로 적재하고 소셜 일별 집계는 PostgreSQL로 전달해 가격과 JOIN. SQL 차트·상태 조회와 MongoDB 게시물 상세 조회를 구분. PostgreSQL도 JSON을 지원하며 두 DB 선택 이유와 비용은 노트에서 설명 | 85초 |
 | 8 | Dashboard & expected outcome | 구상 화면으로 가격·소셜 비교, 날짜별 게시물 탐색, 수집 상태 확인을 보여 줌. 상단의 짧은 흐름도로 수집부터 애플리케이션까지 연결 | 50초 |
 
 총 390초. TRUMP 차트는 제공된 2025-01-18–2026-10-07 일별 종가이며, 현재 가격이나 실제 거래 수익률로 설명하지 않는다. 구상 화면의 미수집 소셜 데이터를 실제 관측처럼 표시하지 않는다.
@@ -39,3 +39,7 @@ Lecture 1은 Proposal의 범위를 **Ideation, data collection & preprocessing, 
 X의 선정 계정 활동을 전체 플랫폼 언급량으로 표현하지 않는다. Reddit은 기존 설계의 접근·사용 조건을 충족한 경우에만 활성화한다. 가격 갱신은 추가 CSV 또는 팀원 크롤러 복원에 의존한다.
 
 API 경로, 페이지 이동, 원본 보존과 갱신 절차는 [수집 설계](../../architecture/ingestion-and-archiving.md)에 둔다. 긴 URL, 전체 ERD, 성능 시험 세부사항은 7분 본문에서 제외한다.
+
+## 전체 파이프라인 도식
+
+[아키텍처의 발표용 Mermaid](../../architecture/system-design.md#발표용-전체-흐름)를 7장에 편집 가능한 도형과 화살표로 반영했다. 위쪽 가격 경로와 아래쪽 소셜 경로, MongoDB에서 PostgreSQL로 향하는 일별 ETL, 두 저장소의 화면 조회 경로를 함께 읽는다.

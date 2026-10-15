@@ -1,8 +1,8 @@
 # Meme Coin Analysis Dashboard 발표 자료
 
-**현재 버전: 2026-10-15 재제작본.** 영문 슬라이드 8장과 한국어 발표자 노트로 구성했다. 발표 목표는 **6분 30초**, 제한 시간 7분에서 30초의 여유를 둔다.
+**현재 버전: 2026-10-15 파이프라인 도식 보강본.** 영문 슬라이드 8장과 한국어 발표자 노트로 구성했다. 발표 목표는 **6분 30초**, 제한 시간 7분에서 30초의 여유를 둔다.
 
-[PowerPoint 열기](memecoin-analysis-dashboard-white.pptx) · [PDF 보기](memecoin-analysis-dashboard-white.pdf) · [한국어 발표 대본](presenter-notes.ko.md) · [페이지별 구성과 평가 기준](slide-outline.md) · [출처와 이미지 크레딧](sources.md)
+[PowerPoint 열기](memecoin-analysis-dashboard-pipeline.pptx) · [PDF 보기](memecoin-analysis-dashboard-pipeline.pdf) · [한국어 발표 대본](presenter-notes.ko.md) · [페이지별 구성과 평가 기준](slide-outline.md) · [출처와 이미지 크레딧](sources.md)
 
 ## 발표 구성
 
@@ -14,10 +14,12 @@
 | 4 | 확보한 가격 데이터와 수집 예정 소셜 데이터 | 40초 |
 | 5 | CMC 크롤링, FxTwitter API, Arctic Shift | 70초 |
 | 6 | 전처리와 일별 지표 생성 | 65초 |
-| 7 | PostgreSQL·MongoDB·원본 아카이브와 ETL | 85초 |
+| 7 | 전체 데이터 파이프라인: 수집부터 DB·ETL·화면까지 | 85초 |
 | 8 | 대시보드 구상과 기대 결과 | 50초 |
 
 강의자료가 명시한 Proposal 범위인 **Ideation, data collection & preprocessing, DB management**를 중심으로 구성했다. 6주 일정은 확인된 제출 요구사항이 아니므로 발표에서 제외했다. 팀원 이름은 아직 **TBD**다. 목표 시간은 대본 배분이며 실제 발표 시간은 리허설에서 확인해야 한다.
+
+7장은 [아키텍처의 Mermaid 개요](../../architecture/system-design.md#발표용-전체-흐름)를 편집 가능한 도형과 연결선으로 옮긴 전체 흐름도다. 가격 경로와 소셜 경로, MongoDB → 일별 ETL → PostgreSQL의 연결, SQL 차트와 MongoDB 게시물 상세 조회를 구분한다.
 
 ## 반영한 데이터 설명
 

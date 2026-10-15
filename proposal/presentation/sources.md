@@ -1,6 +1,6 @@
 # Presentation sources and image credits
 
-Revision and verification date: **2026-10-15**. This file documents the eight-slide, white-background presentation. Each slide also contains source references in its speaker notes. It replaces the credits for the earlier 18-slide draft.
+Revision and verification date: **2026-10-15**. This file documents the eight-slide, white-background presentation, including the revised end-to-end pipeline on slide 7. Each slide also contains source references in its speaker notes. It replaces the credits for the earlier 18-slide draft.
 
 ## Content and supplied data
 
@@ -13,6 +13,8 @@ Revision and verification date: **2026-10-15**. This file documents the eight-sl
 | 8 | `memecoin_price/Dogecoin.csv` inside the ZIP | 92 daily closes, 2026-07-01–2026-09-30. Only the price plot uses observed data; social panel explicitly shows missing coverage |
 
 The TRUMP labels “what you want / after you buy” are humorous annotations, not actual trade entries or returns. Charts preserve the supplied time series and have editable native chart data with embedded workbook snapshots. Local datasets and lecture files are not redistributed with this deck.
+
+Slide 7 follows the [presentation Mermaid overview](../../architecture/system-design.md#발표용-전체-흐름). Its native shapes and connectors are editable. Price and social paths, raw preservation, MongoDB-to-PostgreSQL ETL and the separate application read paths are explicit; publication validation and SQL post-ID selection are explained in the notes.
 
 ## Collection and database references
 
