@@ -9,7 +9,7 @@ The local source set is `lecturenote/1_overview.html` through `lecturenote/10_no
 | Evidence | What it establishes | Project response |
 |---|---|---|
 | Lecture 1, “Team Project Milestones” | Proposal: 20%; “Ideation, data collection & preprocessing, DB management” | Sections 1–5 of the proposal explicitly cover these requirements |
-| Lecture 1, final milestone | Final: 40%; a useful real-world product using a large-scale database, with potential LLM integration | Dashboard plus a measurable pipeline; LLM is optional; actual scale must be reported |
+| Lecture 1, final milestone | Final: 40%; a useful real-world product using a large-scale database, with potential LLM integration | Dashboard plus a measurable pipeline; LLM is optional in the course but core to this project’s chosen prediction scope; actual scale must be reported |
 | Lecture 1, grading and evaluation | Midterm 40%; criteria: Novelty, Impact, Technology, Presentation; team size ≤5 | Evaluation section and six-week work plan |
 | Lectures 2–5 | Collection, exploration, preprocessing | Source audit, raw preservation, normalization, quality flags |
 | Lectures 6–8 | SQL, relationships, joins, aggregation | Keys, constraints, daily marts, safe joins |
@@ -17,7 +17,7 @@ The local source set is `lecturenote/1_overview.html` through `lecturenote/10_no
 
 Lecture 9 explicitly shows JSON inside relational databases. Lecture 10 uses the Guardian's move from MongoDB to PostgreSQL JSONB to distinguish document modeling from engine choice. These lectures support a reasoned comparison, **not a claim that both database engines are mandatory**.
 
-No exact proposal length, submission format, deadline, or numerical “large-scale” threshold was found in the supplied lecture set. These remain unverified. The six-week schedule and approximately 1,200–1,600-word draft are project planning defaults.
+No exact proposal length, submission format, deadline, or numerical “large-scale” threshold was found in the supplied lecture set. These remain unverified. The six-week schedule is a project planning default. The current expanded English draft is approximately 1,900 words; this is an editorial choice.
 
 ## Attached price data
 
@@ -145,3 +145,17 @@ No alternative community source is required for the first demonstration. Additio
 - Continued FxTwitter access, account identity verification, and obtainable historical range.
 - Applicable Reddit authorization; current design does not assume it.
 - Achieved social volume, matching/sentiment accuracy, dashboard latency, and recovery behavior. These are implementation evaluation targets, not completed results.
+
+## Prediction scope revision, 2026-10-15
+
+The user clarified that the central application predicts price direction from both market and social data. The attached whiteboard (`.context/attachments/yYZEUO/IMG_8630.HEIC`) informed the price/social paths, OpenAI API prediction node, relational result store, and dashboard layout. This supersedes the earlier descriptive-only scope and optional-LLM design. The original data audit remains unchanged.
+
+The next UTC close target, 03:00 input freeze, 03:15 issuance deadline, five-coin prediction cohort, bounded text sample, experiment variants, and prospective evaluation are **design choices**, not measured findings. There are no actual inference outputs, accuracy scores, API cost measurements, or deployed dashboard in this deliverable. The slide 8 UP card and topic labels are illustrative mock content. The historical price chart is supplied data.
+
+References checked for this revision:
+
+- [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs): a schema-constrained output interface, not proof of forecast accuracy.
+- [OpenAI evaluation best practices](https://developers.openai.com/api/docs/guides/evaluation-best-practices): explicit evaluation criteria and repeated task-specific checks.
+- [Forecasting: Principles and Practice](https://otexts.com/fpp3/toolbox.html): chronological evaluation with observations preceding test outcomes.
+
+OpenAI model/version, API budget, fresh price acquisition, actual prediction coverage, and prospective sample size remain implementation dependencies. Source conditions must cover the intended text-processing/API use as well as collection. Historical model knowledge and later archive acquisition limit retrospective inference claims.

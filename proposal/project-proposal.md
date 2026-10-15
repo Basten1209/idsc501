@@ -1,6 +1,6 @@
 # Meme Coin Analysis Dashboard
 
-## A Reproducible Batch Pipeline with Relational and Document Databases
+## Next-Day Price Direction Prediction from Market and Social Data
 
 **Course:** Data Engineering — IDSC501 / IMEN891K / AXGS-501
 
@@ -8,23 +8,23 @@
 
 **Submission deadline and format:** TBD
 
-**Design baseline:** 2026-10-14
+**Design baseline:** 2026-10-15
 
 ## 1. Problem and motivation
 
-Meme coin market activity is often discussed alongside online community activity, but price histories and social records differ in structure, availability, and observation time. A chart can imply a relationship even when its social sample covers only selected accounts or contains collection gaps. Our project addresses this problem through a dashboard that makes market and social observations comparable while displaying their provenance, coverage, and freshness.
+Meme coin prices and community discussions are available through different sources and formats. We propose a dashboard that combines numerical price histories with social text to predict whether a coin’s next UTC daily close will rise or fall relative to the preceding close. Users will see the direction, a short model-generated rationale, supporting posts, and the outcomes of previous predictions. Whether social inputs improve predictions is an empirical question, not an established result.
 
 The main contribution is a reproducible data engineering pipeline: collection, raw preservation, preprocessing, document and relational storage, batch aggregation, and application delivery. The course assigns the proposal to ideation, collection/preprocessing, and database management; the final project emphasizes a useful product backed by a large-scale database. Our initial price dataset is small, so we will report actual social volume and measured performance rather than claim that the prototype already meets an unspecified scale threshold. See the [course evidence](evidence-and-references.md#course-requirements).
 
 ## 2. Objectives and research questions
 
-The dashboard will let users inspect market movements, compare them with observed social activity, and trace aggregated signals back to collected posts. It will address three questions:
+The project will answer three questions:
 
-1. How do daily returns, trading volume, and volatility vary across the selected coins?
-2. How do selected-account activity and eligible community discussions co-vary with those market measures, including exploratory lead–lag relationships?
-3. How do source coverage, reposts, collection delays, and ambiguous coin references affect the interpretation of those relationships?
+1. Does combining price and social inputs improve next-day direction accuracy relative to the same model using prices alone and a simple previous-direction baseline?
+2. Can each prediction be traced to the exact prices, posts, observation times, prompt, and model version available when it was issued?
+3. How do missing coverage, ambiguous coin references, and delayed collection affect prediction availability and errors?
 
-These are descriptive questions. Correlation will not establish causation, and the project will not present trading recommendations or a validated price forecasting system.
+The first prediction cohort is DOGE, SHIB, PEPE, BONK, and SPX, matching the planned social scope. All ten coins remain available for market exploration. OpenAI API inference is a core component. No forecasting performance has been measured yet.
 
 ## 3. Data sources and current readiness
 
@@ -42,47 +42,57 @@ The pipeline will preserve response bodies and retrieval metadata before normali
 
 Preprocessing will normalize timestamps to UTC, deduplicate native platform IDs, distinguish original posts from reposts, handle deletion markers, and retain only supported language inputs for sentiment analysis. Coin matching will combine verified accounts, contract identifiers, cashtags, and contextual rules. A ticker alone will not identify an asset, and community membership alone will not prove an explicit coin mention.
 
-The initial historical comparison window is July–September 2026, conditional on obtainable social records. Missing history will remain visible. Engagement collected today will be labeled with its observation time instead of being treated as information available on the original posting date. Collection failure will produce an unavailable or partial status, not a zero-activity day.
+July–September 2026 remains a historical exploration window, conditional on social availability. Prediction evaluation will primarily use newly issued, prospective forecasts. Inputs must satisfy both an event cutoff and an actual availability cutoff; later acquisitions, edits, and engagement observations cannot enter earlier predictions. Historical replay is labeled separately, because contemporary archive retrieval and a model’s prior knowledge can contaminate retrospective tests. Collection failure remains missing or partial rather than zero activity.
 
 ## 5. Database management and architecture
 
-We will use PostgreSQL for asset identities, daily prices, source registries, run metadata, post-to-asset mappings, and derived analytical tables. Relational keys and constraints will support consistent joins and time-series aggregation.
+We will use PostgreSQL for asset identities, daily prices, source registries, run metadata, post-to-asset mappings, immutable prediction metadata, outcomes, and derived analytical tables. Relational keys and constraints will support consistent joins and time-series aggregation.
 
 MongoDB will store social documents and observation history. X posts and Reddit submissions/comments have different fields and nested structures. A document model supports these variations and the application's post-detail retrieval pattern. Common identifiers, timestamps, and schema versions will still be validated. MongoDB uses BSON internally; JSON is the interchange representation, not a separate database category. [MongoDB modeling](https://www.mongodb.com/docs/manual/data-modeling/), [JSON and BSON](https://www.mongodb.com/resources/basics/json-and-bson)
 
 **Why MongoDB instead of PostgreSQL JSON?** PostgreSQL can store and query JSON, and a single-database design would be simpler to operate. We select MongoDB to manage heterogeneous social documents separately from relational market data and analytical tables, and to implement an explicit document-to-relational ETL process as part of the course. This is a modeling and educational choice, not evidence that MongoDB is inherently faster or that text requires NoSQL. Images are not required. The trade-off is additional deployment, backup, and cross-store consistency work. [PostgreSQL JSON support](https://www.postgresql.org/docs/current/datatype-json.html)
 
-The data flow is raw archive → MongoDB social documents → preprocessing and aggregation → PostgreSQL analytical tables → dashboard. Prices enter PostgreSQL after validation. Charts query PostgreSQL; post details query MongoDB by stable ID. The raw archive preserves exact acquired responses for replay, subject to deletion and retention obligations. A versioned, validated batch is published atomically in PostgreSQL so interrupted processing does not replace the last successful chart dataset.
+Validated prices enter PostgreSQL; normalized social documents and observation histories enter MongoDB. Python computes numerical features and constructs a frozen input from both stores. OpenAI API returns a direction and a concise rationale; validation precedes relational storage and publication. MongoDB also retains the inference request/response documents. PostgreSQL stores normalized results, evidence links, and outcomes. Original CSV/JSON files remain a replay aid, rather than a large standalone platform. Charts and prediction cards read PostgreSQL; post details read MongoDB.
 
-## 6. Dashboard and expected outputs
+## 6. Prediction workflow and dashboard
 
-Python and pandas will handle transformations; Streamlit and Plotly will provide four views: market overview, price–social comparison, post exploration, and data health. Docker Compose will define PostgreSQL, MongoDB, and application services; a simple scheduler will run batch jobs.
+After UTC day d closes, the daily job freezes inputs at 03:00 UTC on d+1 and publishes by 03:15. It predicts whether close[d+1] will exceed close[d]. Source events must precede d+1 00:00, and their selected observations must have been acquired and validated by the input cutoff. This is a daily-close comparison issued with about 21 hours remaining, not an exact 24-hour return forecast. Equal closes are recorded as FLAT and excluded from binary accuracy with counts disclosed.
 
-Measures will include daily returns, 30-day volatility, observed post counts, seven-day activity averages, and a basic English sentiment score. VADER is a proposed baseline whose interpretation will be checked manually; linguistic positivity is not equivalent to financial bullishness. [VADER](https://github.com/cjhutto/vaderSentiment)
+Python and pandas calculate returns, volatility, volume changes, and source-specific social activity. The initial input uses 31 daily closes, seven days of social features, and up to 30 deterministically selected text excerpts. The model receives these frozen inputs through the OpenAI API. A structured output contract restricts direction and evidence references; schema validation does not establish predictive accuracy. Unsupported evidence IDs, refusal, missing data, or failed calls result in an explicit failure or abstention. [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
 
-Exploratory correlations will use paired valid observations, display sample counts, and require at least 30 paired days. Lead–lag views will examine a predefined ±7-day range. Every view will display the selected source cohort, available dates, and freshness. Expected outputs include the reproducible pipeline, database models, dashboard, validation report, and source-to-result lineage examples.
+A fusion prediction requires eligible social coverage and at least one usable text item. A separately labeled price-only prediction can still run when its own input requirements hold. Stale prices block current forecasts; restoring price updates is therefore a launch dependency. We will not display uncalibrated model confidence as a probability of success. VADER provides an optional reproducible sentiment feature, distinct from financial direction. [VADER](https://github.com/cjhutto/vaderSentiment)
+
+Streamlit and Plotly will provide a coin selector, historical price chart, next-close prediction, short rationale, related posts/topics, a meme preview, and past outcomes. Original images are display context, not initial inference inputs. Coverage, issuance time, target date, and example/replay status remain visible. Docker Compose will run the databases and application; scheduled Python jobs perform collection and inference. Refreshing the page only reads stored results.
+
+OpenAI API usage adds a budget dependency. Model choice, version, token limits, retry limits, and a daily cost cap must be configured before enabling inference. The planned five-coin, two-variant experiment schedules at most ten logical predictions per day; retries share the same budget. No paid API calls have been made for this proposal.
 
 ## 7. Evaluation and course alignment
 
 Engineering evaluation will cover idempotent reruns, recovery after interruptions, pagination boundaries, schema validation, cross-store traceability, deletion propagation, and correct handling of missing coverage. Aggregate SQL queries must avoid multiplying price rows when joining posts. A stratified sample of up to 200 eligible items will support manual assessment of coin matching and sentiment; smaller datasets will be reviewed in full and reported as such.
 
-We will measure chart-query latency against a two-second target, recording hardware, row counts, and cache conditions. Synthetic stress data, if used, will be separated from collected evidence. Novelty lies in integrating market and social observations with explicit coverage; impact comes from making comparisons interpretable; technology is demonstrated through collection, preprocessing, SQL/NoSQL modeling, and ETL; presentation is supported by clear charts and reproducible documentation.
+Prediction evaluation compares a previous-direction baseline, price-only inference, and price-plus-social inference on paired eligible coin-days. We will report accuracy, balanced accuracy where both classes exist, a confusion matrix, per-coin counts, abstentions, failures, and coverage. Settings will be developed on earlier periods and fixed before evaluation on a later contiguous period. Historical replays and illustrative UI predictions are excluded from prospective scores. Daily time ordering follows standard forecasting evaluation practice. [Forecasting: Principles and Practice](https://otexts.com/fpp3/toolbox.html)
+
+When the next close arrives, a scoring job adds an outcome without altering the original prediction. The team reviews errors and versions changes to prompts or input construction for future runs; this is a feedback process, not automatic model retraining. Small samples will be reported without claiming established predictive value.
+
+We will measure chart-query latency against a two-second target with hardware, row counts, and cache conditions recorded. Novelty is the testable fusion of market and social inputs; impact is a traceable prediction interface; technology includes collection, SQL/NoSQL modeling, ETL, model integration, and evaluation. A successful pipeline remains a useful course outcome even if fusion fails to outperform the baselines.
 
 ## 8. Six-week work plan
 
 | Week | Deliverable |
 |---|---|
-| 1 | Validate sources and access conditions; finalize asset registry, scope, and database contracts |
+| 1 | Validate sources and access conditions; finalize asset registry, prediction target, cutoffs, budget, and database contracts |
 | 2 | Implement eligible collectors, raw archives, checkpoints, and import of existing prices |
-| 3 | Implement normalization, coin matching, MongoDB-to-PostgreSQL ETL, and daily marts |
-| 4 | Build the four dashboard views and provenance navigation |
-| 5 | Run correctness, recovery, manual-label, and performance evaluations |
+| 3 | Implement ETL, frozen prediction inputs, structured inference, and start prospective logging |
+| 4 | Build the prediction dashboard, evidence navigation, and outcome scoring |
+| 5 | Run chronological prediction comparisons, correctness, recovery, and performance checks |
 | 6 | Resolve findings; prepare the demonstration, report, and reproducibility instructions |
 
 This schedule is a planning assumption. Team assignments and the official deadline remain TBD.
 
 ## 9. Limitations and future work
 
-The selected coins introduce survivorship and selection bias. Selected accounts are not representative of all users; archived communities can be incomplete; memes, irony, spam, and multilingual text limit sentiment quality. Third-party services can change or become unavailable. The dashboard will expose these limits and retain the last eligible successful result when a source fails.
+The selected coins introduce survivorship and selection bias. Selected accounts are not representative of all users; archived communities can be incomplete; memes, irony, spam, and multilingual text limit sentiment quality. Third-party services can change or become unavailable. The dashboard will expose these limits and retain earlier results with their original target dates when a source fails. An old prediction will never be relabeled as today’s forecast. API cost, model variation, historical knowledge contamination, and a potentially short prospective sample also limit evaluation.
 
-Images, OCR, embeddings, source-grounded summaries, additional communities, and managed object storage are possible extensions after the text pipeline is validated and source conditions permit them. Telegram or Discord will require verified message access rather than an invitation link alone. No extension is necessary to demonstrate the initial SQL/NoSQL integration.
+Image-based inference, OCR, embeddings, additional communities, and managed object storage are possible extensions after the text-and-price prediction pipeline is validated and source conditions permit them. Telegram or Discord will require verified message access rather than an invitation link alone. No extension is necessary to demonstrate the initial SQL/NoSQL integration.
+
+Detailed implementation contracts: [prediction and evaluation](../architecture/prediction-design.md), [data model](../architecture/data-model.md), and [operations](../architecture/operations-and-validation.md).

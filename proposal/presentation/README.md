@@ -1,45 +1,42 @@
 # Meme Coin Analysis Dashboard 발표 자료
 
-**현재 버전: 2026-10-15 강의 사례를 반영한 아키텍처 개요본.** 영문 슬라이드 8장과 한국어 발표자 노트로 구성했다. 발표 목표는 **6분 30초**, 제한 시간 7분에서 30초의 여유를 둔다.
+**2026-10-15 예측 중심 개정본.** 영문 8장과 한국어 발표 노트로 구성했다. 목표 **6분 30초**, 발표 제한 7분이다.
 
-[PowerPoint 열기](memecoin-analysis-dashboard-architecture.pptx) · [PDF 보기](memecoin-analysis-dashboard-architecture.pdf) · [한국어 발표 대본](presenter-notes.ko.md) · [페이지별 구성과 평가 기준](slide-outline.md) · [출처와 이미지 크레딧](sources.md)
+[PowerPoint](memecoin-analysis-dashboard-prediction.pptx) · [PDF](memecoin-analysis-dashboard-prediction.pdf) · [한국어 대본](presenter-notes.ko.md) · [페이지 구성](slide-outline.md) · [출처](sources.md)
 
-## 발표 구성
+## 발표 흐름
 
-| 장 | 내용 | 목표 시간 |
+| 장 | 내용 | 시간 |
 |---|---|---|
 | 1 | 표지 | 10초 |
 | 2 | 목차 | 15초 |
-| 3 | 주제 선정: TRUMP 차트와 커뮤니티 맥락 | 55초 |
-| 4 | 전체 파이프라인: 가격·소셜 경로의 분기와 합류 | 55초 |
-| 5 | 데이터 규모, CMC 크롤링, FxTwitter API, Arctic Shift | 70초 |
-| 6 | 전처리와 일별 지표 생성 | 65초 |
-| 7 | PostgreSQL·MongoDB 선택 이유와 운영 비용 | 70초 |
-| 8 | 대시보드 구상과 기대 결과 | 50초 |
+| 3 | Ideation: 가격+소셜로 다음 방향을 예측할 수 있을까? | 50초 |
+| 4 | Data collection: 확보 데이터와 크롤링/API | 60초 |
+| 5 | Data pipeline: 저장·예측·결과 평가 | 80초 |
+| 6 | Data preprocessing: 특성 구성·시점 고정 | 60초 |
+| 7 | PostgreSQL·MongoDB 선택 | 55초 |
+| 8 | 예측 대시보드 목업과 비교 평가 | 60초 |
 
-강의자료가 명시한 Proposal 범위인 **Ideation, data collection & preprocessing, DB management**를 중심으로 구성했다. 6주 일정은 확인된 제출 요구사항이 아니므로 발표에서 제외했다. 팀원 이름은 아직 **TBD**다. 목표 시간은 대본 배분이며 실제 발표 시간은 리허설에서 확인해야 한다.
+강의 Proposal 범위는 ideation, collection/preprocessing, DB management다. 6주 일정은 확인된 발표 요구가 아니므로 본문에서 제외한다. 시간은 대본 배분이며 리허설 전 실제 측정값은 아니다. 팀원은 TBD다.
 
-4장은 [아키텍처의 Mermaid 개요](../../architecture/system-design.md#발표용-전체-흐름)를 편집 가능한 도형과 연결선으로 옮긴 전체 흐름도다. 강의의 Netflix·Coupang Eats 사례처럼 분기·합류를 중심으로 배치했다. MongoDB → Python ETL → PostgreSQL의 순서를 따르고 실선 데이터 흐름과 점선 조회 경로를 구분한다. 전체 개요 이후 수집·전처리·DB 선택·화면을 차례로 설명한다.
+## 이번 설계의 기준
 
-## 반영한 데이터 설명
+- 핵심 기능은 가격+소셜 텍스트를 사용하는 **다음 UTC 종가 방향 예측**이다. OpenAI API 추론은 기본 범위이며 정확도는 아직 측정하지 않았다.
+- 4장에서 출처를 먼저 설명하고, 5장은 사용자 화이트보드와 [Mermaid](../../architecture/system-design.md#발표용-전체-흐름)를 바탕으로 가격/소셜 저장, Python 입력 구성, API 추론, 결과 저장, 실제 종가 평가를 연결한다.
+- 원본 CSV·JSON 파일은 재처리를 위해 보관한다. 큰 Raw archive 단계를 발표의 본선에 두지 않는다.
+- PostgreSQL은 관계·가격·예측·실제 결과, MongoDB는 소셜 문서·관측 이력·모델 artifact를 담당한다. PostgreSQL JSON도 가능한 대안이며 두 DB 선택에는 운영 비용이 따른다.
+- 가격 CMC 크롤링, 소셜 FxTwitter/조건부 Arctic Shift, MemeChain의 ideation 참고 역할은 유지한다. 최신 예측에는 가격 갱신과 예측 시점에 확보된 소셜이 필요하다.
 
-- CMC 가격은 팀원이 **Historical Data 페이지를 크롤링한 결과**다. CSV는 수집 결과의 전달·적재 형식이다.
-- X는 선정 계정의 FxTwitter API 조회, Reddit은 접근·사용 조건을 충족할 때 Arctic Shift API 또는 허용된 아카이브 파일을 이용할 계획이다.
-- MemeChain은 수집할 사이트와 채널을 찾는 ideation 참고 자료다. 데이터셋을 파이프라인에 적재하지 않는다. 실제 자료는 선정한 사이트·계정에서 크롤링/API로 수집한다.
-- PostgreSQL도 JSON을 지원한다. MongoDB는 플랫폼별 문서의 저장·조회 책임을 분리하고 SQL/NoSQL 사이의 ETL을 구현하기 위한 선택이다. 두 DB의 백업·일관성 관리 비용도 설명한다.
+## 화면과 데이터
 
-TRUMP 차트는 첨부 가격 데이터의 전체 제공 기간인 **2025-01-18–2026-10-07**, 일별 종가 628개를 사용한다. “what you want / after you buy”는 발표용 농담이다. 빨간 상승 구간의 끝은 장중 최고가가 아닌 **최고 일별 종가**다. 실시간 가격이나 실제 거래 결과가 아니다.
+TRUMP 차트는 제공된 2025-01-18–2026-10-07 종가 628개다. “what you want / after you buy”는 실제 거래가 아닌 발표용 농담이며, 강조 구간은 최고 일별 종가까지다.
 
-8장 대시보드는 구현 예정 화면이다. DOGE 차트는 제공 자료의 2026년 3분기 종가 92개이며, 미수집 소셜 데이터는 가짜 수치 대신 부재 상태로 표시했다.
+마지막 화면의 DOGE 차트는 2026년 3분기 종가 92개다. 9월 30일 종가 **$0.0944721408**, 직전 일 대비 **+0.6562627897%**를 화면에서 반올림한다. UP 예측·주제·근거는 **예시**이며 실제 모델 출력이 아니다. 적중률은 만들지 않았다. 밈 영역은 출처를 표시한 UI 배치 샘플이다. 구현된 서비스 화면으로 소개하지 않는다.
 
 ## 디자인과 편집
 
-모든 슬라이드 배경은 **흰색**이다. 본문은 검정·회색, 핵심 표현만 [POSTECH 공식 색상](https://postech.ac.kr/kor/university-introduction/logo.do) **#A61955**로 강조했다. shadcn/ui의 단순한 컴포넌트와 Geist의 타이포그래피·여백·얇은 경계선을 참고했다. 특정 UI 라이브러리로 PPT를 렌더링했다는 의미는 아니다.
+모든 배경은 흰색이다. 검정·회색과 [POSTECH #A61955](https://postech.ac.kr/kor/university-introduction/logo.do)를 사용한다. Geist의 글꼴·여백과 shadcn/ui의 단순한 경계·상태 표현을 참고했다. 목업의 화면 구성 요소와 파이프라인은 PowerPoint 도형/텍스트이고 가격 차트 2개와 수집 표도 편집 가능하다. 5장의 작은 화면만 8장 렌더 이미지다.
 
-웹에서 가져온 흑백 Doge 일러스트 1개와 소스·DB 아이콘 5개를 사용했다. 소스 아이콘은 전체 파이프라인과 수집 상세에서 반복해 연결 관계를 보여준다. 4장의 화면 축소본은 8장 구상 화면에서 가져왔다. 출처는 각 장의 노트와 [크레딧 문서](sources.md)에 있다.
+Geist와 Geist Mono는 PPT에 내장하지 않았다. 편집할 기기에 [공식 폰트](https://vercel.com/font)를 설치하거나 열람용 PDF를 사용한다. 각 장의 노트와 [크레딧](sources.md)에 출처를 기록했다. PPT 구조·차트 데이터 검사와 LibreOffice PDF 8장의 시각 검수를 완료했다. PowerPoint 앱에서 직접 검사했다고 주장하지 않는다.
 
-본문 글꼴은 Geist, 코드와 일부 보조 표기는 Geist Mono다. 다른 기기에서 편집할 때는 [공식 Geist 폰트](https://vercel.com/font)를 설치하면 글꼴 대체를 피할 수 있다. 폰트 파일은 PPT에 내장하지 않았으며, PDF는 공유·열람용이다.
-
-차트 2개, 수집 방법 표 1개와 흐름도는 편집 가능한 PowerPoint 개체다. 차트에는 사용한 값의 Excel 통합문서 스냅샷이 포함되어 있다. 외부 시세와 자동 동기화하는 연결은 없다. 최종 PPT의 구조·폰트·차트 데이터 검사를 통과했고, LibreOffice로 변환한 PDF의 8장을 모두 시각 검수했다. Microsoft PowerPoint 앱에서 직접 검사한 것은 아니다.
-
-기준 문서는 [영문 Proposal](../project-proposal.md), [근거 문서](../evidence-and-references.md), [한국어 아키텍처](../../architecture/README.md)다. 이전 18장 초안은 Git 이력에 남아 있다.
+기준 문서: [영문 Proposal](../project-proposal.md), [예측 설계](../../architecture/prediction-design.md), [전체 아키텍처](../../architecture/README.md). 이전 버전은 Git 이력에 남긴다.

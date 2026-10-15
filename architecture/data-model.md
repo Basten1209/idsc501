@@ -19,6 +19,8 @@
 | `fetched_at` | 우리 수집기가 응답을 받은 UTC 시각 |
 | `source_observed_at` | 공급자가 원문을 관측했다고 명시한 시각. 알 수 없으면 null |
 | `metrics_as_of` | 해당 반응 수의 공급자 관측 시각. 정확히 알 수 없으면 null이며 fetched_at으로 의미를 바꾸지 않음 |
+| `available_at` | 해당 원본/가격 버전이 우리 시스템에서 확보·검증된 시각. 과거 게시일로 소급하지 않음 |
+| `prediction_id` | 발행 전후 변하지 않는 예측 UUID. 입력·모델·프롬프트·대상일에 연결 |
 | `event_date` | `created_at` 또는 가격 `timeOpen`의 UTC 날짜. 사용자 기기 시간대와 무관 |
 
 문서·계약 주소·링크를 코인에 연결하는 규칙도 버전 관리한다. 다른 체인의 wrapped token은 검증된 매핑이 있을 때만 같은 `asset_id`를 사용한다. 익명 이용자의 계정을 외부 신원이나 지갑 소유자와 연결하지 않는다.
@@ -42,6 +44,27 @@
 | `social_daily` | PK `(build_id, asset_id, date, platform, cohort)`; FK build·asset | observed_count, 분석용 eligible_count, 감성 유효 건수·평균, 7일 평균, 반복 비율, coverage_status·최신 관측 시각 |
 | `dashboard_state` | PK `id=1`; nullable FK `published_build_id` | 공개 build 포인터. 트랜잭션으로 한 번에 변경; 최초 실행·철회 시 null 허용 |
 
+### 예측용 추가 테이블
+
+[예측 계약](prediction-design.md)에 따라 아래 관계를 추가한다. 원문 JSON을 PostgreSQL에 저장하는 대신 식별자·정규 컬럼과 연결 테이블을 사용한다.
+
+| 테이블 | 키와 제약 | 주요 필드 |
+|---|---|---|
+| `price_observations` | PK `price_snapshot_id`; UNIQUE asset/date/payload hash/run | 수정 전 가격까지 보존하는 append-only OHLCV, fetched_at, available_at, 원본 URI·해시·row. price_daily는 현재값 투영 |
+| `prediction_configs` | PK config_version | 고정 model ID/version, prompt URI/hash, feature/selection versions, cohort scope, token limits. 변경 시 새 버전 |
+| `prediction_inputs` | PK input_id; FK asset/config | base_date, target_date, event_cutoff, input_cutoff, variant, input_hash, manifest URI, coverage, mode(prospective/replay/demo), created_at |
+| `prediction_input_prices` | PK input_id/price_snapshot_id; FK 양쪽 | 정확한 가격 observation 선택 목록 |
+| `prediction_input_social` | PK input_id/snapshot_id | Mongo snapshot·item key, 사용 역할(feature/text), available_at. DB 간 존재성은 작업에서 검증 |
+| `predictions` | PK prediction_id; UNIQUE input_id/model_version/prompt_version | 방향(nullable UP/DOWN), 상태, rationale, issued_at, API request ID, artifact ID, latency, token usage, 비용. ABSTAIN은 direction=null + abstained |
+| `prediction_attempts` | PK prediction_id/attempt_no; FK prediction | requested_at, response_at, status, artifact ID, API request ID, tokens, 비용. 최초 유효 예측만 발행 |
+| `prediction_evidence` | PK prediction_id/item_key/snapshot_id | 입력에 포함된 근거만 허용, 표시 순서. 해당 input_social 관계와 앱 검증 |
+| `prediction_topics` | PK prediction_id/topic_order; FK prediction | 입력 근거에 기반한 짧은 주제 label, 최대 3개. 전체 플랫폼의 trending 순위로 해석하지 않음 |
+| `prediction_outcomes` | PK prediction_id/outcome_version; FK prediction·price observations | baseline/target price_snapshot_id, actual_direction(UP/DOWN/FLAT), correct(nullable), evaluated_at, scoring_version |
+
+`prediction_inputs.target_date = base_date + 1 day`, 사건 마감 ≤ 입력 마감, prospective 발행 시각 ≤ 대상일 03:15 UTC를 검증한다. 입력의 모든 선택 관측은 available_at ≤ input_cutoff를 만족해야 한다. price_daily가 수정되어도 prediction_input_prices는 바뀌지 않는다. 최초 유효 예측은 재시도로 교체하지 않으며 설정 변경은 새 실험 버전이다. 모델 결과 저장 시 원 응답 artifact와 정규화 결과의 해시·ID가 일치해야 한다.
+
+권장 조회 인덱스는 `predictions(issued_at)`, `prediction_inputs(asset_id,target_date,variant)`, `price_observations(asset_id,date,available_at)`다. 실제 쿼리 계획으로 확정한다.
+
 `source_endpoints`에서 링크가 바뀌면 이전 행의 `valid_to`를 닫고 새로운 `endpoint_id` 행을 만든다. 같은 논리 계정/커뮤니티의 `scope_id`는 유지한다. 현재 활성 매핑의 중복은 `(asset_id, scope_id, platform)`에 대한 부분 UNIQUE 제약으로 방지한다. identity verification과 접근 허용·수집 가능 상태는 서로 다른 필드다.
 
 `social_features`와 `item_assets`는 현재 탐색용 투영이며 새 snapshot/규칙으로 갱신할 수 있다. 과거 차트의 재현 입력은 build manifest의 snapshot ID 목록과 버전으로 고정한다. 차트가 현재 투영을 직접 읽어 과거 build와 섞지 않도록 한다.
@@ -63,13 +86,24 @@ erDiagram
     ASSETS ||--o{ MARKET_DAILY : measures
     ASSETS ||--o{ SOCIAL_DAILY : measures
     MART_BUILDS ||--o| DASHBOARD_STATE : publishes
+    ASSETS ||--o{ PRICE_OBSERVATIONS : observed
+    ASSETS ||--o{ PREDICTION_INPUTS : targets
+    PREDICTION_CONFIGS ||--o{ PREDICTION_INPUTS : configures
+    PREDICTION_INPUTS ||--o{ PREDICTION_INPUT_PRICES : freezes
+    PRICE_OBSERVATIONS ||--o{ PREDICTION_INPUT_PRICES : supplies
+    PREDICTION_INPUTS ||--o{ PREDICTION_INPUT_SOCIAL : freezes
+    PREDICTION_INPUTS ||--o{ PREDICTIONS : feeds
+    PREDICTIONS ||--o{ PREDICTION_ATTEMPTS : attempts
+    PREDICTIONS ||--o{ PREDICTION_EVIDENCE : cites
+    PREDICTIONS ||--o{ PREDICTION_OUTCOMES : scores
+    PREDICTIONS ||--o{ PREDICTION_TOPICS : summarizes
 ```
 
 최소 추가 인덱스는 `price_daily(date, asset_id)`, `social_features(event_date, platform)`, `item_assets(asset_id, item_key)`, `ingestion_runs(provider, started_at DESC)`, `coverage_daily(scope_id, date)`다. 기본 키와 중복되는 인덱스를 무조건 추가하지 않고 실제 SQL의 실행 계획으로 확인한다. 모든 PostgreSQL FK를 적용하되 MongoDB와의 연결은 DB 간 FK로 강제할 수 없으므로 별도 검증한다.
 
 ## 3. MongoDB collection
 
-두 collection으로 시작한다. 다음 JSON은 **가상의 정규화 예시**이며 FxTwitter의 실제 wire response나 수집된 게시물이 아니다. 실제 MongoDB 저장 시 시각은 BSON date로 변환하고, ID는 문자열로 유지한다. [JSON/BSON 구분](https://www.mongodb.com/resources/basics/json-and-bson)
+소셜 collection 두 개에 예측 artifact collection을 추가한다. 다음 JSON은 **가상의 정규화 예시**이며 FxTwitter의 실제 wire response나 수집된 게시물이 아니다. 실제 MongoDB 저장 시 시각은 BSON date로 변환하고, ID는 문자열로 유지한다. [JSON/BSON 구분](https://www.mongodb.com/resources/basics/json-and-bson)
 
 ### `social_items`: 현재 문서
 
@@ -108,6 +142,7 @@ Reddit submission은 `title`, `text`, `community`를 사용한다. comment는 �
   "provider": "fxtwitter",
   "endpoint_id": "example-endpoint",
   "fetched_at": "2026-10-14T02:00:00Z",
+  "available_at": "2026-10-14T02:00:01Z",
   "source_observed_at": null,
   "metrics_as_of": null,
   "metrics": {"likes": 12, "reposts": 2, "replies": 1},
@@ -126,6 +161,10 @@ Reddit submission은 `title`, `text`, `community`를 사용한다. comment는 �
 관측 문서는 일반적인 재수집으로 덮어쓰지 않는다. 삭제·보관 기간 처리 시에는 본문이 포함된 observation도 제거 또는 비식별화해야 한다. 불변 저장이라는 이유로 삭제 의무를 무시하지 않는다.
 
 MongoDB 검증기는 필수 ID·시각·schema_version·열거값의 타입을 검증하고, source_payload의 플랫폼별 필드는 유연하게 허용한다. 배열 길이와 응답 크기를 제한하며 이상 문서를 quarantine으로 보낸다. `social_items`의 `_id` 고유성 외에 `(platform, created_at)`, `(community, created_at)` 인덱스를 둔다. observations에는 `(item_key, fetched_at DESC)`와 `(run_id, item_key)` 인덱스를 둔다. 초기에는 벡터 인덱스나 모든 payload 필드에 대한 인덱스를 만들지 않는다.
+
+### `prediction_artifacts`: 동결한 모델 요청과 응답
+
+`_id`, `prediction_id`, `attempt_no`, `input_id`, `request_payload`, `response_payload`, `request_hash`, `response_hash`, `requested_at`, `received_at`, `schema_version`, `model_version`, `prompt_version`를 저장한다. 요청 전문에는 실제 선택한 수치·본문과 snapshot ID가 들어간다. API 키·인증 헤더는 제외한다. 최초 요청과 재시도를 각각 보존하고, 삭제 대상 본문이 포함되면 소셜 원문과 함께 제거/비식별화한다. 예측 방향·평가 라벨은 SQL의 정규화된 결과를 정본으로 삼는다.
 
 ## 4. 코인 매칭과 cohort
 
