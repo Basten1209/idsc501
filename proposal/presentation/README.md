@@ -1,8 +1,8 @@
 # Meme Coin Analysis Dashboard 발표 자료
 
-**2026-10-15 소셜 사건·밈 도입 개정본.** 영문 8장과 한국어 발표 노트로 구성했다. 목표 **6분 30초**, 발표 제한 7분이다.
+**2026-10-15 실제 게시물 캡처 반영본.** 영문 8장과 한국어 발표 노트로 구성했다. 목표 **6분 30초**, 발표 제한 7분이다.
 
-[PowerPoint](memecoin-analysis-dashboard-ideation.pptx) · [PDF](memecoin-analysis-dashboard-ideation.pdf) · [한국어 대본](presenter-notes.ko.md) · [페이지 구성](slide-outline.md) · [출처](sources.md)
+[PowerPoint](memecoin-analysis-dashboard-posts.pptx) · [PDF](memecoin-analysis-dashboard-posts.pdf) · [한국어 대본](presenter-notes.ko.md) · [페이지 구성](slide-outline.md) · [출처](sources.md)
 
 ## 발표 흐름
 
@@ -29,6 +29,8 @@
 
 ## 화면과 데이터
 
+3장에는 당시 게시물의 실제 캡처 자료를 넣었다. 머스크 이미지는 Fabian Dablander의 캡처 모음(Know Your Meme 보존본)에서 해당 답글을 잘랐고, 트럼프 이미지는 The Block에 실린 게시물 화면 전체를 사용했다. 이번 작업에서 직접 새로 캡처한 화면은 아니다. 이미지 아래 큰 인용문은 발표용 강조이며, 캡처의 내용은 바꾸지 않았다.
+
 3장은 머스크의 “Doge” 게시(2021-02-04, X/Twitter)와 트럼프의 “I LOVE $TRUMP” 게시(2025-03-23, Truth Social)에 맞춘 Binance 분봉 차트를 보여준다. 게시 직전 분봉 종가 대비 이후 60개 분봉의 마지막 종가 변화는 DOGE **+28.9%**, TRUMP **+9.0%**다. 오른쪽 “When we buy…”에는 흑백 우는 페페와 실제 TRUMP 되돌림을 배치했다. 농담이며 팀의 거래 기록은 아니다.
 
 분 단위의 선택 사례는 프로젝트의 동기를 설명하며, 인과관계나 일별 예측 성능을 입증하지 않는다. Binance·Truth Social은 이 장의 근거용이고, 프로젝트 수집 경로는 CMC·X·조건부 Reddit을 유지한다. 산식·시각·데이터 체크섬은 [출처](sources.md#slide-3-social-posts-and-price-windows)에 기록했다.
@@ -37,7 +39,7 @@
 
 ## 디자인과 편집
 
-모든 배경은 흰색이다. 검정·회색과 [POSTECH #A61955](https://postech.ac.kr/kor/university-introduction/logo.do)를 사용한다. Geist의 글꼴·여백과 shadcn/ui의 단순한 경계·상태 표현을 참고했다. 목업의 화면 구성 요소와 파이프라인은 PowerPoint 도형/텍스트이고 가격 차트 4개(3장 3개, 8장 1개)와 수집 표도 편집 가능하다. 5장의 작은 화면만 8장 렌더 이미지다.
+모든 슬라이드 배경은 흰색이다. 게시물 캡처의 프로필·인증 표시 색상은 원본 그대로 유지했다. 검정·회색과 [POSTECH #A61955](https://postech.ac.kr/kor/university-introduction/logo.do)를 사용한다. Geist의 글꼴·여백과 shadcn/ui의 단순한 경계·상태 표현을 참고했다. 목업의 화면 구성 요소와 파이프라인은 PowerPoint 도형/텍스트이고 가격 차트 4개(3장 3개, 8장 1개)와 수집 표도 편집 가능하다. 5장의 작은 화면만 8장 렌더 이미지다.
 
 Geist와 Geist Mono는 PPT에 내장하지 않았다. 편집할 기기에 [공식 폰트](https://vercel.com/font)를 설치하거나 열람용 PDF를 사용한다. 각 장의 노트와 [크레딧](sources.md)에 출처를 기록했다. PPT 구조·차트 데이터 검사와 LibreOffice PDF 8장의 시각 검수를 완료했다. PowerPoint 앱에서 직접 검사했다고 주장하지 않는다.
 

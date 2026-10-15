@@ -2,7 +2,7 @@
 
 **8장 · 목표 6분 30초 · 제한 7분.** 아래 시간은 리허설용 배분이다. 팀원 이름은 발표 전에 채운다. 예시 예측과 실제 결과를 구분한다.
 
-[PPT](memecoin-analysis-dashboard-ideation.pptx) · [PDF](memecoin-analysis-dashboard-ideation.pdf) · [출처](sources.md)
+[PPT](memecoin-analysis-dashboard-posts.pptx) · [PDF](memecoin-analysis-dashboard-posts.pdf) · [출처](sources.md)
 
 ## 1. Meme Coin Analysis Dashboard
 

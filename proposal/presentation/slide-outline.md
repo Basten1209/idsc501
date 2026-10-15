@@ -21,7 +21,7 @@ Lecture 1의 Proposal 범위인 **Ideation, data collection & preprocessing, DB 
 
 ## 설계와 화면의 의미
 
-3장은 “When they post”와 “When we buy…”를 한 화면에 배치한다. 왼쪽은 실제 게시 문구·플랫폼·날짜와 분봉 차트, 오른쪽은 흑백 우는 페페와 실제 TRUMP 되돌림이다. 두 사건은 선택 사례이며 게시물의 인과 효과나 다음 날 예측력을 입증하지 않는다. Binance 분봉과 Truth Social은 발표 동기 자료이고 수집 대상 확대를 뜻하지 않는다. 머스크의 검증된 문구는 “Doge”이며 “Doge to the moon!”을 직접 인용으로 만들지 않는다.
+3장은 “When they post”와 “When we buy…”를 한 화면에 배치한다. 왼쪽은 당시 게시물의 실제 캡처·플랫폼·날짜와 분봉 차트, 오른쪽은 흑백 우는 페페와 실제 TRUMP 되돌림이다. 두 사건은 선택 사례이며 게시물의 인과 효과나 다음 날 예측력을 입증하지 않는다. Binance 분봉과 Truth Social은 발표 동기 자료이고 수집 대상 확대를 뜻하지 않는다. 머스크의 검증된 문구는 “Doge”이며 “Doge to the moon!”을 직접 인용으로 만들지 않는다.
 
 5장은 [발표용 Mermaid](../../architecture/system-design.md#발표용-전체-흐름)와 사용자의 화이트보드 스케치를 반영한다. 큰 Raw archive 상자는 없애고 CSV·JSON을 수집 결과 형식으로 표시한다. 원본 파일 보관은 재처리용 보조 설명으로 남긴다. 가격 이력을 읽는 화살표와 예측을 저장하는 화살표를 구분하고, 점선은 실제 결과 검토에 따른 향후 입력·프롬프트 개선이다. 자동 학습이나 주문을 뜻하지 않는다.
 
