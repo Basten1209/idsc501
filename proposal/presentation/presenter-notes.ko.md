@@ -2,7 +2,7 @@
 
 **8장 · 목표 6분 30초 · 제한 7분.** 아래 시간은 리허설용 배분이다. 팀원 이름은 발표 전에 채운다. 예시 예측과 실제 결과를 구분한다.
 
-[PPT](memecoin-analysis-dashboard-prediction.pptx) · [PDF](memecoin-analysis-dashboard-prediction.pdf) · [출처](sources.md)
+[PPT](memecoin-analysis-dashboard-ideation.pptx) · [PDF](memecoin-analysis-dashboard-ideation.pdf) · [출처](sources.md)
 
 ## 1. Meme Coin Analysis Dashboard
 
@@ -20,9 +20,11 @@
 
 **50초 · 0:25–1:15**
 
-제공받은 TRUMP 일별 종가입니다. 상승 구간은 what you want, 이후는 after you buy라고 표현했습니다. 실제 거래를 나타내는 것은 아닙니다.
-가격만 보면 커뮤니티에서 어떤 이야기가 오갔는지는 알기 어렵습니다. 저희는 가격의 수치 정보에 게시물과 커뮤니티 활동을 더하면 다음 날 가격 방향을 예측하는 데 도움이 되는지 확인하려고 합니다. 구체적인 대상은 다음 UTC 일별 종가가 직전 종가보다 오를지 내릴지입니다.
-가격만 사용한 같은 모델과 가격·소셜을 함께 사용한 모델을 비교할 계획이며, 현재 예측 성능이 입증된 상태는 아닙니다.
+밈코인은 소셜 게시와 가격 급등이 맞물리는 사례가 있습니다. 머스크가 Doge를 게시한 구간에서 DOGE는 약 한 시간에 28.9%, 트럼프가 Truth Social에서 토큰을 언급한 구간에서 TRUMP는 9.0% 올랐습니다.
+
+그런데 우리가 사면 이런 표정이 됩니다. 오른쪽은 실제 되돌림 차트지만, 저희 거래 기록은 아닙니다.
+
+이 두 사건만으로 인과관계나 예측력을 주장하진 않습니다. 대신 가격과 소셜을 함께 쓰면 다음 날 방향 예측에 도움이 되는지, 가격만 쓴 결과와 비교하겠습니다.
 
 ## 4. Data collection
 

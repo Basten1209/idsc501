@@ -1,8 +1,8 @@
 # Meme Coin Analysis Dashboard 발표 자료
 
-**2026-10-15 예측 중심 개정본.** 영문 8장과 한국어 발표 노트로 구성했다. 목표 **6분 30초**, 발표 제한 7분이다.
+**2026-10-15 소셜 사건·밈 도입 개정본.** 영문 8장과 한국어 발표 노트로 구성했다. 목표 **6분 30초**, 발표 제한 7분이다.
 
-[PowerPoint](memecoin-analysis-dashboard-prediction.pptx) · [PDF](memecoin-analysis-dashboard-prediction.pdf) · [한국어 대본](presenter-notes.ko.md) · [페이지 구성](slide-outline.md) · [출처](sources.md)
+[PowerPoint](memecoin-analysis-dashboard-ideation.pptx) · [PDF](memecoin-analysis-dashboard-ideation.pdf) · [한국어 대본](presenter-notes.ko.md) · [페이지 구성](slide-outline.md) · [출처](sources.md)
 
 ## 발표 흐름
 
@@ -29,13 +29,15 @@
 
 ## 화면과 데이터
 
-TRUMP 차트는 제공된 2025-01-18–2026-10-07 종가 628개다. “what you want / after you buy”는 실제 거래가 아닌 발표용 농담이며, 강조 구간은 최고 일별 종가까지다.
+3장은 머스크의 “Doge” 게시(2021-02-04, X/Twitter)와 트럼프의 “I LOVE $TRUMP” 게시(2025-03-23, Truth Social)에 맞춘 Binance 분봉 차트를 보여준다. 게시 직전 분봉 종가 대비 이후 60개 분봉의 마지막 종가 변화는 DOGE **+28.9%**, TRUMP **+9.0%**다. 오른쪽 “When we buy…”에는 흑백 우는 페페와 실제 TRUMP 되돌림을 배치했다. 농담이며 팀의 거래 기록은 아니다.
+
+분 단위의 선택 사례는 프로젝트의 동기를 설명하며, 인과관계나 일별 예측 성능을 입증하지 않는다. Binance·Truth Social은 이 장의 근거용이고, 프로젝트 수집 경로는 CMC·X·조건부 Reddit을 유지한다. 산식·시각·데이터 체크섬은 [출처](sources.md#slide-3-social-posts-and-price-windows)에 기록했다.
 
 마지막 화면의 DOGE 차트는 2026년 3분기 종가 92개다. 9월 30일 종가 **$0.0944721408**, 직전 일 대비 **+0.6562627897%**를 화면에서 반올림한다. UP 예측·주제·근거는 **예시**이며 실제 모델 출력이 아니다. 적중률은 만들지 않았다. 밈 영역은 출처를 표시한 UI 배치 샘플이다. 구현된 서비스 화면으로 소개하지 않는다.
 
 ## 디자인과 편집
 
-모든 배경은 흰색이다. 검정·회색과 [POSTECH #A61955](https://postech.ac.kr/kor/university-introduction/logo.do)를 사용한다. Geist의 글꼴·여백과 shadcn/ui의 단순한 경계·상태 표현을 참고했다. 목업의 화면 구성 요소와 파이프라인은 PowerPoint 도형/텍스트이고 가격 차트 2개와 수집 표도 편집 가능하다. 5장의 작은 화면만 8장 렌더 이미지다.
+모든 배경은 흰색이다. 검정·회색과 [POSTECH #A61955](https://postech.ac.kr/kor/university-introduction/logo.do)를 사용한다. Geist의 글꼴·여백과 shadcn/ui의 단순한 경계·상태 표현을 참고했다. 목업의 화면 구성 요소와 파이프라인은 PowerPoint 도형/텍스트이고 가격 차트 4개(3장 3개, 8장 1개)와 수집 표도 편집 가능하다. 5장의 작은 화면만 8장 렌더 이미지다.
 
 Geist와 Geist Mono는 PPT에 내장하지 않았다. 편집할 기기에 [공식 폰트](https://vercel.com/font)를 설치하거나 열람용 PDF를 사용한다. 각 장의 노트와 [크레딧](sources.md)에 출처를 기록했다. PPT 구조·차트 데이터 검사와 LibreOffice PDF 8장의 시각 검수를 완료했다. PowerPoint 앱에서 직접 검사했다고 주장하지 않는다.
 
