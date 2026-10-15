@@ -62,7 +62,7 @@ Independent CSV checks on 2026-10-14 used Python's CSV parser, exact decimal val
 
 All ten coins overlap from **2025-10-04 to 2026-10-07**. The price data occupy about 3.4 MB uncompressed; this is not itself a large-scale database. The selected ten coins are a fixed cohort, not historical top-ten membership.
 
-The notebook describes a public CMC historical-page backend, not a verified official Pro API integration. It reports expansion from 3,960 to 14,773 rows and a sparse response for an overly broad Dogecoin request, followed by requests of at most 300 days. The referenced `collect_cmc_history.py`, `requirements.txt`, collection summary, request archive, and manifest were not attached. File-level findings are independently checked; the full acquisition process has not been rerun. No prices after 2026-10-07 are currently supplied.
+**Team clarification, 2026-10-15:** the price data were collected by crawling CoinMarketCap Historical Data pages and then supplied as CSV files. Web crawling is the original acquisition method; CSV import is the downstream ingestion step. The notebook describes requests to the public historical-page backend, consistent with that crawling workflow. An official CMC Pro API integration has not been established. The notebook reports expansion from 3,960 to 14,773 rows and a sparse response for an overly broad Dogecoin request, followed by requests of at most 300 days. The referenced `collect_cmc_history.py`, `requirements.txt`, collection summary, request archive, and manifest were not attached. File-level findings are independently checked; the full acquisition process has not been rerun. No prices after 2026-10-07 are currently supplied.
 
 ## MemeChain inspection
 

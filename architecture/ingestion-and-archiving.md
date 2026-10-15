@@ -6,7 +6,7 @@
 
 | 소스 | 가져올 데이터 | 초기 수집 경로 | 갱신과 제약 |
 |---|---|---|---|
-| 팀 제공 CMC CSV | 일별 OHLCV·시가총액·공급량 | 기존 ZIP의 CSV import | 추가 CSV 수령 시 import; 수집기 복원 전에는 자동 최신화 불가 |
+| CoinMarketCap 가격 | 일별 OHLCV·시가총액·공급량 | Historical Data 페이지 크롤링으로 수집한 CSV를 import | 추가 CSV 수령 시 import; 크롤러 복원 전에는 자동 최신화 불가 |
 | MemeChain | 코인·계약·웹사이트·소셜 URL | 버전이 고정된 Zenodo CSV | 초기 seed import, 신규 release 확인은 월별 |
 | FxTwitter | 선정 계정의 게시물과 관측 시점 반응 수 | v2 timeline, known-status lookup | 일별; 선정 계정 범위와 제공자 한계 표시 |
 | Arctic Shift | Reddit submission/comment | community/time search, 필요 시 허용된 월별 archive | 접근·사용 조건 해결 전 disabled |
@@ -78,7 +78,9 @@ API가 존재하거나 X 소비자 구독을 보유했다는 사실로 공식 X 
 
 403이면 해당 source job을 중단한다. 프록시나 User-Agent 교체로 차단을 우회하지 않는다. 광범위한 쿼리가 실패한 사실을 빈 커뮤니티로 해석하지 않는다. 무인 수집 전에 기술 접근과 사용 조건을 모두 충족해야 한다.
 
-## 5. 가격 import와 전처리
+## 5. 가격 크롤링 결과의 import와 전처리
+
+가격의 원래 수집 방식은 **CoinMarketCap Historical Data 페이지 크롤링**이다. 팀원이 크롤링한 결과를 CSV로 전달했으며, 현재 파이프라인은 이 파일을 입력으로 사용한다. 크롤링은 데이터 확보 단계이고 CSV import는 확보한 데이터의 적재 단계다.
 
 ZIP 내부 파일 목록과 SHA-256을 확인한 뒤 세미콜론·UTF-8 BOM을 명시해 읽는다. 파일명은 사전에 정의한 CMC asset 매핑으로 변환한다. `name=2781`은 `source_name`으로 보존한다.
 

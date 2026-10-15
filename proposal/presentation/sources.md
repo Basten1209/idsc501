@@ -5,7 +5,7 @@ Presentation prepared on **2026-10-15**. The project evidence baseline is **2026
 ## Project evidence
 
 - [Project proposal](../project-proposal.md), [evidence and references](../evidence-and-references.md), and [architecture](../../architecture/README.md).
-- Team-supplied `.context/attachments/ogAuZF/memecoin_price.zip` and `.context/attachments/lezAdu/memecoin_eda.ipynb`. These local inputs are not redistributed here.
+- Team-supplied `.context/attachments/ogAuZF/memecoin_price.zip` and `.context/attachments/lezAdu/memecoin_eda.ipynb`. The team confirmed on 2026-10-15 that the prices were collected by crawling CoinMarketCap Historical Data pages and delivered as CSV files. CSV import describes downstream ingestion, not the original collection method. These local inputs are not redistributed here.
 - Slide 2 uses all 628 supplied TRUMP daily closes, from 2025-01-18 through 2026-10-07. Highest daily close: **$45.5030010328**, on 2025-01-19. Last supplied close: **$1.8772949946**. The intraday high of **$75.3518198764** is a different measure and is not the plotted peak. The green and red segments share the peak observation.
 - Slide 12 uses supplied DOGE daily closes during July–September 2026. Social activity is explicitly unavailable. No synthetic social activity appears in the deck.
 - The 10-coin price input contains **14,773 rows**. Source availability checks, the **31,811-row** MemeChain social metadata table, and course requirements are documented in the evidence file. Source spot checks do not establish continuous availability.

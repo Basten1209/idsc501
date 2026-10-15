@@ -4,7 +4,7 @@
 
 가격과 소셜 활동을 같은 시간축에 놓되, **무엇을 언제 어디에서 관측했는지 확인할 수 있는 대시보드**를 만든다. Data Engineering의 수집 → 전처리 → 저장 → 분석용 변환 → 애플리케이션 흐름을 구현하는 프로젝트다. 가격 예측 성능이나 투자 전략의 수익률을 입증하는 프로젝트로 정의하지 않는다.
 
-현재 확보한 자료는 10개 코인 가격 CSV 14,773행과 EDA 노트북이다. 소셜 API의 일부 호출 성공과 대규모 소셜 데이터 확보는 다른 상태다. 상세 근거는 [데이터 점검 기록](../proposal/evidence-and-references.md)에 있다.
+현재 확보한 자료는 팀원이 CoinMarketCap Historical Data 페이지를 크롤링해 만든 10개 코인 가격 CSV 14,773행과 EDA 노트북이다. 소셜 API의 일부 호출 성공과 대규모 소셜 데이터 확보는 다른 상태다. 상세 근거는 [데이터 점검 기록](../proposal/evidence-and-references.md)에 있다.
 
 | 영역 | 초기 범위 | 해석 범위 |
 |---|---|---|
@@ -21,7 +21,8 @@
 
 ```mermaid
 flowchart TD
-    P[팀 제공 CMC 가격 CSV] --> R[원본 파일 아카이브와 manifest]
+    CMC[CoinMarketCap Historical Data 페이지 크롤링] --> P[팀 제공 가격 CSV]
+    P --> R[원본 파일 아카이브와 manifest]
     Z[MemeChain 링크 메타데이터] --> G[코인·계약 주소·링크 검증]
     G --> X[FxTwitter 선정 계정 수집]
     G --> A[Arctic Shift 조건부 수집]
