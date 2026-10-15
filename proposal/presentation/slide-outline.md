@@ -1,6 +1,6 @@
 # 7분 Proposal 발표 구성안
 
-**편집 기준: 2026-10-15.** 본문 8장, 목표 6분 30초, 여유 30초. 영문 슬라이드와 한국어 발표 설명을 사용한다. 기존 PPT·PDF는 18장 초안이며 이 구성안으로 아직 재제작하지 않았다.
+**편집 기준: 2026-10-15.** 본문 8장, 목표 6분 30초, 여유 30초. 영문 슬라이드와 한국어 발표 설명을 사용한다. 현재 PPT·PDF에 이 구성을 반영했다. 모든 배경은 흰색이며, 검정·회색 본문과 POSTECH #A61955 포인트를 사용한다.
 
 ## 평가 기준과 편집 방향
 
@@ -12,12 +12,12 @@ Lecture 1은 Proposal의 범위를 **Ideation, data collection & preprocessing, 
 |---|---|---|---|
 | 1 | Meme Coin Analysis Dashboard | 프로젝트명과 팀원. 밈 이미지 하나로 주제 전달 | 10초 |
 | 2 | Contents | Ideation / Data collection / Preprocessing / Database & application | 15초 |
-| 3 | Ideation: Why Meme Coins? | TRUMP 차트의 “what you want / after you buy”. 가격이 움직일 때 관측한 커뮤니티에서 어떤 이야기가 나왔는지 탐색하는 대시보드의 목적 | 55초 |
-| 4 | Data Overview | 가격의 숫자·날짜와 소셜의 텍스트·메타데이터를 비교. 확보한 10개 코인 가격 14,773행과 수집 예정 소셜 데이터 구분 | 40초 |
-| 5 | Data Collection | CMC Historical Data 페이지 크롤링, FxTwitter API, 조건부 Arctic Shift API·아카이브. 선정 프로젝트 사이트 HTML 크롤링은 링크·정체성 검증의 보조 경로. 일별 소셜 배치와 최근 7일 재조회 | 70초 |
-| 6 | Data Preprocessing | 가격 품질 점검, 게시물 ID 중복 제거, UTC 정렬, 언어·재게시 구분, 코인 연결. 게시물 한 건이 코인별 일별 지표로 변환되는 예시 | 65초 |
-| 7 | Database Management | PostgreSQL의 가격·관계·분석 테이블, MongoDB의 게시물 문서·관측 이력, 원본 파일 아카이브. 안정적인 ID로 연결하고 일별 지표를 SQL에서 가격과 결합. PostgreSQL도 JSON을 지원하며 MongoDB는 역할 분리와 SQL/NoSQL ETL 학습을 위한 선택 | 85초 |
-| 8 | Dashboard & Expected Outcome | 구상 화면으로 가격·소셜 비교, 날짜별 게시물 탐색, 수집 상태 확인을 보여 줌. 상단의 짧은 흐름도로 수집부터 애플리케이션까지 연결 | 50초 |
+| 3 | Why meme coins? | TRUMP 차트의 “what you want / after you buy”. 가격이 움직일 때 관측한 커뮤니티에서 어떤 이야기가 나왔는지 탐색하는 대시보드의 목적 | 55초 |
+| 4 | Data overview | 가격의 숫자·날짜와 소셜의 텍스트·메타데이터를 비교. 확보한 10개 코인 가격 14,773행과 수집 예정 소셜 데이터 구분 | 40초 |
+| 5 | Data collection | CMC Historical Data 페이지 크롤링, FxTwitter API, 조건부 Arctic Shift API·아카이브. 선정 프로젝트 사이트 HTML 크롤링은 링크·정체성 검증의 보조 경로. 일별 소셜 배치와 최근 7일 재조회 | 70초 |
+| 6 | Data preprocessing | 가격 품질 점검, 게시물 ID 중복 제거, UTC 정렬, 언어·재게시 구분, 코인 연결. 게시물 한 건이 코인별 일별 지표로 변환되는 예시 | 65초 |
+| 7 | Database management | PostgreSQL의 가격·관계·분석 테이블, MongoDB의 게시물 문서·관측 이력, 원본 파일 아카이브. 안정적인 ID로 연결하고 일별 지표를 SQL에서 가격과 결합. PostgreSQL도 JSON을 지원하며 MongoDB는 역할 분리와 SQL/NoSQL ETL 학습을 위한 선택 | 85초 |
+| 8 | Dashboard & expected outcome | 구상 화면으로 가격·소셜 비교, 날짜별 게시물 탐색, 수집 상태 확인을 보여 줌. 상단의 짧은 흐름도로 수집부터 애플리케이션까지 연결 | 50초 |
 
 총 390초. TRUMP 차트는 제공된 2025-01-18–2026-10-07 일별 종가이며, 현재 가격이나 실제 거래 수익률로 설명하지 않는다. 구상 화면의 미수집 소셜 데이터를 실제 관측처럼 표시하지 않는다.
 
