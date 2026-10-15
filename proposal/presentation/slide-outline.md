@@ -10,14 +10,14 @@ Lecture 1은 Proposal의 범위를 **Ideation, data collection & preprocessing, 
 
 | 페이지 | 영문 제목 | 핵심 내용과 시각 자료 | 시간 |
 |---|---|---|---|
-| 1 | Meme Coin Analysis Dashboard | 프로젝트명과 팀원. 밈 이미지 하나로 주제 전달 | 10초 |
-| 2 | Contents | Ideation / Data collection / Preprocessing / Database & application | 15초 |
-| 3 | Why meme coins? | TRUMP 차트의 “what you want / after you buy”. 가격이 움직일 때 관측한 커뮤니티에서 어떤 이야기가 나왔는지 탐색하는 대시보드의 목적 | 55초 |
-| 4 | Data overview | 가격의 숫자·날짜와 소셜의 텍스트·메타데이터를 비교. 확보한 10개 코인 가격 14,773행과 수집 예정 소셜 데이터 구분 | 40초 |
-| 5 | Data collection | CMC Historical Data 페이지 크롤링, FxTwitter API, 조건부 Arctic Shift API·아카이브. 선정 프로젝트 사이트 HTML 크롤링은 링크·정체성 검증의 보조 경로. 일별 소셜 배치와 최근 7일 재조회 | 70초 |
-| 6 | Data preprocessing | 가격 품질 점검, 게시물 ID 중복 제거, UTC 정렬, 언어·재게시 구분, 코인 연결. 게시물 한 건이 코인별 일별 지표로 변환되는 예시 | 65초 |
-| 7 | Data pipeline & storage | 좌→우 전체 흐름도: 수집 → 원본 아카이브 → 전처리 → DB·ETL → 화면. 가격은 PostgreSQL, 소셜은 MongoDB로 적재하고 소셜 일별 집계는 PostgreSQL로 전달해 가격과 JOIN. SQL 차트·상태 조회와 MongoDB 게시물 상세 조회를 구분. PostgreSQL도 JSON을 지원하며 두 DB 선택 이유와 비용은 노트에서 설명 | 85초 |
-| 8 | Dashboard & expected outcome | 구상 화면으로 가격·소셜 비교, 날짜별 게시물 탐색, 수집 상태 확인을 보여 줌. 상단의 짧은 흐름도로 수집부터 애플리케이션까지 연결 | 50초 |
+| 1 | Meme Coin Analysis Dashboard | 프로젝트명·팀원과 Doge 이미지 | 10초 |
+| 2 | Contents | Ideation / Data pipeline / Collection & preprocessing / Database & application | 15초 |
+| 3 | Why meme coins? | TRUMP 일별 종가의 “what you want / after you buy”. 가격과 관측한 커뮤니티 맥락을 함께 탐색하려는 목적 | 55초 |
+| 4 | Data pipeline | 수업 사례를 참고한 아키텍처 개요. 출처 로고 → 원본 파일 → Python 전처리에서 가격·소셜 경로가 분기. MongoDB → 일별 ETL → PostgreSQL을 순서대로 배치하고 가격과의 합류를 강조. 점선은 하나의 대시보드로 향하는 조회 경로 | 55초 |
+| 5 | Data collection | 확보한 10개 코인·가격 14,773행과 수집 예정 소셜을 구분. CMC Historical Data 크롤링, FxTwitter API, 조건부 Arctic Shift API·아카이브. 웹사이트 검증과 갱신 방식 | 70초 |
+| 6 | Data preprocessing | 가격 품질 검증, ID 중복 제거, UTC 정렬, 언어·재게시 구분, 코인 연결과 일별 지표. 실패와 실제 0건 구분 | 65초 |
+| 7 | Why two databases? | MongoDB의 문서 모델과 PostgreSQL의 관계형 분석을 비교. PostgreSQL도 JSON을 지원함을 명시하고 SQL/NoSQL 모델링·ETL 학습 목적과 운영 비용 설명 | 70초 |
+| 8 | Dashboard & expected outcome | 가격·소셜 비교, 날짜별 게시물 탐색, 수집 상태를 구상 화면으로 보여 줌 | 50초 |
 
 총 390초. TRUMP 차트는 제공된 2025-01-18–2026-10-07 일별 종가이며, 현재 가격이나 실제 거래 수익률로 설명하지 않는다. 구상 화면의 미수집 소셜 데이터를 실제 관측처럼 표시하지 않는다.
 
@@ -42,4 +42,6 @@ API 경로, 페이지 이동, 원본 보존과 갱신 절차는 [수집 설계](
 
 ## 전체 파이프라인 도식
 
-[아키텍처의 발표용 Mermaid](../../architecture/system-design.md#발표용-전체-흐름)를 7장에 편집 가능한 도형과 화살표로 반영했다. 위쪽 가격 경로와 아래쪽 소셜 경로, MongoDB에서 PostgreSQL로 향하는 일별 ETL, 두 저장소의 화면 조회 경로를 함께 읽는다.
+[아키텍처의 발표용 Mermaid](../../architecture/system-design.md#발표용-전체-흐름)를 **4장**의 편집 가능한 기술 도형과 연결선으로 반영했다. Lecture 1의 Netflix 사례에서 데이터 이동·조회 구분을, Coupang Eats 사례에서 경로 분기와 목적지 표현을 참고했다. 기술 구성은 우리 프로젝트의 Python·PostgreSQL·MongoDB·Streamlit 범위를 따른다.
+
+파일은 접힌 모서리 도형, 처리 작업은 사각형, DB는 원통으로 구분한다. 가격은 PostgreSQL로 직접 이어지고, 소셜은 MongoDB와 Python 일별 집계를 거쳐 합류한다. 실선은 데이터 처리 흐름, 점선은 화면에 제공하는 읽기 경로다. 대시보드 축소 이미지는 기존 구상 화면의 일부분이며, 구현 완료된 앱을 뜻하지 않는다.

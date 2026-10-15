@@ -1,8 +1,8 @@
 # Meme Coin Analysis Dashboard 발표 자료
 
-**현재 버전: 2026-10-15 파이프라인 도식 보강본.** 영문 슬라이드 8장과 한국어 발표자 노트로 구성했다. 발표 목표는 **6분 30초**, 제한 시간 7분에서 30초의 여유를 둔다.
+**현재 버전: 2026-10-15 강의 사례를 반영한 아키텍처 개요본.** 영문 슬라이드 8장과 한국어 발표자 노트로 구성했다. 발표 목표는 **6분 30초**, 제한 시간 7분에서 30초의 여유를 둔다.
 
-[PowerPoint 열기](memecoin-analysis-dashboard-pipeline.pptx) · [PDF 보기](memecoin-analysis-dashboard-pipeline.pdf) · [한국어 발표 대본](presenter-notes.ko.md) · [페이지별 구성과 평가 기준](slide-outline.md) · [출처와 이미지 크레딧](sources.md)
+[PowerPoint 열기](memecoin-analysis-dashboard-architecture.pptx) · [PDF 보기](memecoin-analysis-dashboard-architecture.pdf) · [한국어 발표 대본](presenter-notes.ko.md) · [페이지별 구성과 평가 기준](slide-outline.md) · [출처와 이미지 크레딧](sources.md)
 
 ## 발표 구성
 
@@ -11,15 +11,15 @@
 | 1 | 표지 | 10초 |
 | 2 | 목차 | 15초 |
 | 3 | 주제 선정: TRUMP 차트와 커뮤니티 맥락 | 55초 |
-| 4 | 확보한 가격 데이터와 수집 예정 소셜 데이터 | 40초 |
-| 5 | CMC 크롤링, FxTwitter API, Arctic Shift | 70초 |
+| 4 | 전체 파이프라인: 가격·소셜 경로의 분기와 합류 | 55초 |
+| 5 | 데이터 규모, CMC 크롤링, FxTwitter API, Arctic Shift | 70초 |
 | 6 | 전처리와 일별 지표 생성 | 65초 |
-| 7 | 전체 데이터 파이프라인: 수집부터 DB·ETL·화면까지 | 85초 |
+| 7 | PostgreSQL·MongoDB 선택 이유와 운영 비용 | 70초 |
 | 8 | 대시보드 구상과 기대 결과 | 50초 |
 
 강의자료가 명시한 Proposal 범위인 **Ideation, data collection & preprocessing, DB management**를 중심으로 구성했다. 6주 일정은 확인된 제출 요구사항이 아니므로 발표에서 제외했다. 팀원 이름은 아직 **TBD**다. 목표 시간은 대본 배분이며 실제 발표 시간은 리허설에서 확인해야 한다.
 
-7장은 [아키텍처의 Mermaid 개요](../../architecture/system-design.md#발표용-전체-흐름)를 편집 가능한 도형과 연결선으로 옮긴 전체 흐름도다. 가격 경로와 소셜 경로, MongoDB → 일별 ETL → PostgreSQL의 연결, SQL 차트와 MongoDB 게시물 상세 조회를 구분한다.
+4장은 [아키텍처의 Mermaid 개요](../../architecture/system-design.md#발표용-전체-흐름)를 편집 가능한 도형과 연결선으로 옮긴 전체 흐름도다. 강의의 Netflix·Coupang Eats 사례처럼 분기·합류를 중심으로 배치했다. MongoDB → Python ETL → PostgreSQL의 순서를 따르고 실선 데이터 흐름과 점선 조회 경로를 구분한다. 전체 개요 이후 수집·전처리·DB 선택·화면을 차례로 설명한다.
 
 ## 반영한 데이터 설명
 
@@ -36,7 +36,7 @@ TRUMP 차트는 첨부 가격 데이터의 전체 제공 기간인 **2025-01-18�
 
 모든 슬라이드 배경은 **흰색**이다. 본문은 검정·회색, 핵심 표현만 [POSTECH 공식 색상](https://postech.ac.kr/kor/university-introduction/logo.do) **#A61955**로 강조했다. shadcn/ui의 단순한 컴포넌트와 Geist의 타이포그래피·여백·얇은 경계선을 참고했다. 특정 UI 라이브러리로 PPT를 렌더링했다는 의미는 아니다.
 
-웹에서 가져온 흑백 Doge 일러스트 1개와 소스·DB 아이콘 5개를 사용했다. 출처는 각 장의 노트와 [크레딧 문서](sources.md)에 있다.
+웹에서 가져온 흑백 Doge 일러스트 1개와 소스·DB 아이콘 5개를 사용했다. 소스 아이콘은 전체 파이프라인과 수집 상세에서 반복해 연결 관계를 보여준다. 4장의 화면 축소본은 8장 구상 화면에서 가져왔다. 출처는 각 장의 노트와 [크레딧 문서](sources.md)에 있다.
 
 본문 글꼴은 Geist, 코드와 일부 보조 표기는 Geist Mono다. 다른 기기에서 편집할 때는 [공식 Geist 폰트](https://vercel.com/font)를 설치하면 글꼴 대체를 피할 수 있다. 폰트 파일은 PPT에 내장하지 않았으며, PDF는 공유·열람용이다.
 

@@ -1,6 +1,6 @@
 # Presentation sources and image credits
 
-Revision and verification date: **2026-10-15**. This file documents the eight-slide, white-background presentation, including the revised end-to-end pipeline on slide 7. Each slide also contains source references in its speaker notes. It replaces the credits for the earlier 18-slide draft.
+Revision and verification date: **2026-10-15**. This file documents the eight-slide, white-background presentation, including the lecture-inspired architecture overview on slide 4. Each slide also contains source references in its speaker notes. It replaces the credits for the earlier 18-slide draft.
 
 ## Content and supplied data
 
@@ -8,13 +8,13 @@ Revision and verification date: **2026-10-15**. This file documents the eight-sl
 |---|---|---|
 | 1–8 | [Project proposal](../project-proposal.md), [evidence and references](../evidence-and-references.md), [system design](../../architecture/system-design.md) | Proposed scope and implementation decisions; not evidence of an implemented service |
 | 2, 5–7 | Local `lecturenote/1_overview.html` and `lecturenote/2_data-collection.html` | Proposal: ideation, collection/preprocessing and DB management. Six-week schedule is not a verified presentation requirement |
-| 3, 4, 8 | User-supplied `.context/attachments/ogAuZF/memecoin_price.zip` and `.context/attachments/lezAdu/memecoin_eda.ipynb` | Ten coins, 14,773 price rows. Team collected prices by crawling CMC Historical Data pages and delivered CSVs; crawler source is not supplied |
+| 3, 5, 8 | User-supplied `.context/attachments/ogAuZF/memecoin_price.zip` and `.context/attachments/lezAdu/memecoin_eda.ipynb` | Ten coins, 14,773 price rows. Team collected prices by crawling CMC Historical Data pages and delivered CSVs; crawler source is not supplied |
 | 3 | `memecoin_price/OFFICIAL TRUMP.csv` inside the ZIP | 628 daily closes, 2025-01-18–2026-10-07; maximum daily close $45.5030010328, last supplied close $1.8772949946. No claim about intraday ATH or live price |
 | 8 | `memecoin_price/Dogecoin.csv` inside the ZIP | 92 daily closes, 2026-07-01–2026-09-30. Only the price plot uses observed data; social panel explicitly shows missing coverage |
 
 The TRUMP labels “what you want / after you buy” are humorous annotations, not actual trade entries or returns. Charts preserve the supplied time series and have editable native chart data with embedded workbook snapshots. Local datasets and lecture files are not redistributed with this deck.
 
-Slide 7 follows the [presentation Mermaid overview](../../architecture/system-design.md#발표용-전체-흐름). Its native shapes and connectors are editable. Price and social paths, raw preservation, MongoDB-to-PostgreSQL ETL and the separate application read paths are explicit; publication validation and SQL post-ID selection are explained in the notes.
+Slide 4 follows the [presentation Mermaid overview](../../architecture/system-design.md#발표용-전체-흐름). Its native shapes and connectors are editable. Lecture 1’s Netflix and Coupang Eats examples informed branching/convergence, storage symbols and the distinction between solid data-flow lines and dashed read paths. MongoDB precedes aggregation and PostgreSQL in the processing route. Both read paths feed one dashboard. Publication validation and SQL post-ID selection remain in the detailed architecture. Slide 7 notes also explain publication validation. The preview is a cropped image of the existing slide 8 concept, not an implemented app.
 
 ## Collection and database references
 
@@ -36,10 +36,10 @@ Slide 7 follows the [presentation Mermaid overview](../../architecture/system-de
 | Slide | Asset | Source and downloaded file |
 |---|---|---|
 | 1 | Black-and-white Doge illustration | [Icons8 Doge collection](https://icons8.com/icons/set/doge), [image](https://img.icons8.com/ios7/1200/doge.jpg). Visible attribution on the cover and in notes |
-| 5 | CoinMarketCap icon | [Simple Icons](https://github.com/simple-icons/simple-icons), [original SVG](https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/coinmarketcap.svg) |
-| 5 | X icon | [Simple Icons](https://github.com/simple-icons/simple-icons), [original SVG](https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/x.svg) |
-| 5 | Reddit icon | [Simple Icons](https://github.com/simple-icons/simple-icons), [original SVG](https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/reddit.svg) |
+| 4, 5 | CoinMarketCap icon | [Simple Icons](https://github.com/simple-icons/simple-icons), [original SVG](https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/coinmarketcap.svg) |
+| 4, 5 | X icon | [Simple Icons](https://github.com/simple-icons/simple-icons), [original SVG](https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/x.svg) |
+| 4, 5 | Reddit icon | [Simple Icons](https://github.com/simple-icons/simple-icons), [original SVG](https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/reddit.svg) |
 | 7 | MongoDB icon | [Simple Icons](https://github.com/simple-icons/simple-icons), [original SVG](https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/mongodb.svg) |
 | 7 | PostgreSQL icon | [Simple Icons](https://github.com/simple-icons/simple-icons), [original SVG](https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/postgresql.svg) |
 
-Assets are used to identify the topic and services; they do not imply endorsement. Simple Icons provides its collection under [CC0](https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md); brand marks remain subject to their respective owners' rights. The Icons8 illustration is attributed separately. No generated photographs or invented social screenshots are used.
+Assets are used to identify the topic and services; they do not imply endorsement. Simple Icons provides its collection under [CC0](https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md); brand marks remain subject to their respective owners' rights. The Icons8 illustration is attributed separately. The slide 4 miniature reuses the concept screen from slide 8; its DOGE price chart comes from the supplied data and its social panel is explicitly unavailable. No generated photographs or invented social observations are used.

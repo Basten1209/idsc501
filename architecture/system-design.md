@@ -21,28 +21,29 @@
 
 ### 발표용 전체 흐름
 
-PPT 7장과 같은 개요다. **위쪽 가격 경로와 아래쪽 소셜 경로가 PostgreSQL의 분석 테이블에서 결합**된다. 각 화살표는 다음 단계로 전달하는 데이터의 방향이다. PostgreSQL의 차트·상태 조회와 MongoDB의 게시물 상세 조회는 서로 다른 읽기 경로다.
+PPT **4장**에서 먼저 전체 그림을 보여주고, 5–8장에서 수집·전처리·DB 선택·화면을 설명한다. Lecture 1의 Netflix·Coupang Eats 사례를 참고해 데이터의 분기와 합류를 중심으로 배치했다. **실선은 수집·변환·적재, 점선은 대시보드의 읽기 경로**다. 점선 화살표는 읽은 데이터가 화면에 제공되는 방향이며, 네트워크 요청 방향을 나타내는 시퀀스 다이어그램은 아니다.
 
 ```mermaid
 flowchart LR
-    C["CMC Historical Data<br/>크롤링 → 가격 CSV"] --> RAW["원본 아카이브<br/>CSV · JSON · HTML<br/>URL · 수집 시각 · 체크섬"]
-    S["선정 X / Reddit<br/>FxTwitter API<br/>Arctic Shift 조건부 수집"] --> RAW
-    RAW --> V["가격 검증<br/>UTC 날짜 · 중복 · OHLC"]
-    RAW --> N["소셜 표준화<br/>게시물 ID · UTC · 플랫폼 필드"]
-    V --> PG[("PostgreSQL<br/>가격 + 일별 지표<br/>코인·날짜 기준 JOIN")]
-    N --> M[("MongoDB<br/>게시물·댓글 문서<br/>반응 수 관측 이력")]
-    M --> ETL["Python 일별 ETL<br/>코인 연결 · 감성<br/>코인·날짜·범위별 집계"]
-    ETL --> PG
-    PG --> CH["Streamlit + Plotly<br/>가격·소셜 차트 / 데이터 상태"]
-    M --> DETAIL["Streamlit 게시물 상세"]
-    PG -. "검색 투영 → 게시물 ID" .-> DETAIL
-    classDef plain fill:#FFFFFF,stroke:#BDBDBD,color:#111111;
+    C["CMC Historical Data<br/>크롤링 → CSV"] --> RAW["원본 파일 아카이브<br/>CSV · JSON · HTML"]
+    X["선정 X 계정<br/>FxTwitter API"] --> RAW
+    R["선정 Reddit 커뮤니티<br/>Arctic Shift · 조건부"] --> RAW
+    RAW --> P["Python 전처리<br/>가격 검증 · 소셜 표준화"]
+    P -- "정제된 일별 가격" --> PG[("PostgreSQL<br/>price_daily · social_daily<br/>코인·날짜 기준 JOIN")]
+    P -- "표준화한 소셜 문서" --> M[("MongoDB<br/>게시물·댓글·관측 이력")]
+    M --> ETL["Python 일별 ETL<br/>코인 연결 · 감성 · 집계"]
+    ETL -- "일별 소셜 지표" --> PG
+    PG -. "차트·상태 데이터" .-> APP["Meme Coin Dashboard<br/>Streamlit + Plotly"]
+    M -. "게시물 상세 데이터" .-> APP
+    classDef plain fill:#FFFFFF,stroke:#999999,color:#111111;
     classDef accent fill:#FFFFFF,stroke:#A61955,color:#A61955;
-    class C,S,RAW,V,N,PG,M,CH,DETAIL plain;
-    class ETL accent;
+    class C,X,R,RAW,P,M,ETL,APP plain;
+    class PG accent;
 ```
 
-소셜은 일별 배치와 최근 7일 재조회, 월별 아카이브를 기본으로 한다. 가격 갱신에는 새 CSV 또는 팀원 크롤러 복원이 필요하다. Raw archive의 HTML은 선정 프로젝트 웹사이트의 검증 응답이며 MemeChain 데이터셋을 뜻하지 않는다. 실제 구현에서는 아래 상세 경로의 분석 배치 검증·공개 단계를 거친다. PPT에서는 읽기 경로를 간결하게 보여 주기 위해 SQL의 게시물 ID 선택 단계와 배치 공개 절차를 발표 노트로 설명한다.
+MongoDB는 소셜 문서가 생성되는 지점에, PostgreSQL은 가격과 소셜 집계가 합류하는 지점에 배치한다. PPT에서는 파일 아이콘, 처리 사각형, DB 원통, 대시보드 축소 화면으로 역할을 구분하며 두 DB를 동일한 열에 고정하지 않는다. Python 전처리 상자는 가격 검증과 소셜 정규화 작업을 묶어 보여주는 것이며, 두 입력을 행 단위로 합치는 단계가 아니다.
+
+소셜은 일별 배치와 최근 7일 재조회, 월별 아카이브를 기본으로 한다. 가격 갱신에는 새 CSV 또는 팀원 크롤러 복원이 필요하다. 원본의 URL·수집 시각·체크섬은 manifest에 보관한다. HTML은 선정 프로젝트 웹사이트의 검증 응답이며 MemeChain 데이터셋을 뜻하지 않는다. 실제 구현에서는 아래 상세 경로의 분석 배치 검증·공개 단계를 거친다. 게시물 탐색은 SQL 검색 투영으로 ID를 선택한 뒤 MongoDB 상세를 읽는다. 이런 구현 세부사항은 발표용 개요와 분리한다.
 
 ### 상세 경로와 공개 경계
 
